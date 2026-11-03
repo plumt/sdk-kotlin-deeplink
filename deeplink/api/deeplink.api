@@ -1,0 +1,149 @@
+public final class net/plumt/deeplink/android/AndroidDeepLinks {
+	public static final field INSTANCE Lnet/plumt/deeplink/android/AndroidDeepLinks;
+	public static final fun selfIntent (Landroid/content/Context;Ljava/lang/String;)Landroid/content/Intent;
+	public static final fun selfPendingIntent (Landroid/content/Context;Ljava/lang/String;I)Landroid/app/PendingIntent;
+	public static final fun selfPendingIntent (Landroid/content/Context;Ljava/lang/String;II)Landroid/app/PendingIntent;
+	public static synthetic fun selfPendingIntent$default (Landroid/content/Context;Ljava/lang/String;IIILjava/lang/Object;)Landroid/app/PendingIntent;
+	public static final fun trustPolicy (Landroid/content/Context;)Lnet/plumt/deeplink/TrustPolicy;
+}
+
+public abstract interface class net/plumt/deeplink/android/CallerVerifier {
+	public static final field Companion Lnet/plumt/deeplink/android/CallerVerifier$Companion;
+	public static fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/CallerVerifier;
+	public static fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/CallerVerifier;
+	public abstract fun identify (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/CallerIdentity;
+	public static synthetic fun identify$default (Lnet/plumt/deeplink/android/CallerVerifier;Landroid/app/Activity;Landroid/content/Intent;ILjava/lang/Object;)Lnet/plumt/deeplink/CallerIdentity;
+}
+
+public final class net/plumt/deeplink/android/CallerVerifier$Companion {
+	public final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/CallerVerifier;
+	public final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/CallerVerifier;
+	public static synthetic fun create$default (Lnet/plumt/deeplink/android/CallerVerifier$Companion;Landroid/content/Context;Ljava/util/Collection;ILjava/lang/Object;)Lnet/plumt/deeplink/android/CallerVerifier;
+}
+
+public final class net/plumt/deeplink/android/CallerVerifier$DefaultImpls {
+	public static synthetic fun identify$default (Lnet/plumt/deeplink/android/CallerVerifier;Landroid/app/Activity;Landroid/content/Intent;ILjava/lang/Object;)Lnet/plumt/deeplink/CallerIdentity;
+}
+
+public final class net/plumt/deeplink/android/DeepLinkIntentReader {
+	public static final field Companion Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;
+	public synthetic fun <init> (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public static final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public static final fun create (Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public static final fun create (Lnet/plumt/deeplink/android/CallerVerifier;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public static final fun create (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public final fun read (Landroid/app/Activity;)Lnet/plumt/deeplink/android/IntentReadResult;
+	public final fun read (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/android/IntentReadResult;
+	public static synthetic fun read$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader;Landroid/app/Activity;Landroid/content/Intent;ILjava/lang/Object;)Lnet/plumt/deeplink/android/IntentReadResult;
+}
+
+public final class net/plumt/deeplink/android/DeepLinkIntentReader$Companion {
+	public final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public final fun create (Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public final fun create (Lnet/plumt/deeplink/android/CallerVerifier;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public final fun create (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public static synthetic fun create$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;ILjava/lang/Object;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+	public static synthetic fun create$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;ILjava/lang/Object;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+}
+
+public final class net/plumt/deeplink/android/ExtraInvalidReason : java/lang/Enum {
+	public static final field TOO_LONG Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public static final field UNREADABLE Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public static final field WRONG_TYPE Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public static fun values ()[Lnet/plumt/deeplink/android/ExtraInvalidReason;
+}
+
+public abstract class net/plumt/deeplink/android/ExtraRead {
+}
+
+public final class net/plumt/deeplink/android/ExtraRead$Absent : net/plumt/deeplink/android/ExtraRead {
+	public static final field INSTANCE Lnet/plumt/deeplink/android/ExtraRead$Absent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/ExtraRead$Invalid : net/plumt/deeplink/android/ExtraRead {
+	public fun <init> (Lnet/plumt/deeplink/android/ExtraInvalidReason;)V
+	public final fun component1 ()Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public final fun copy (Lnet/plumt/deeplink/android/ExtraInvalidReason;)Lnet/plumt/deeplink/android/ExtraRead$Invalid;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/ExtraRead$Invalid;Lnet/plumt/deeplink/android/ExtraInvalidReason;ILjava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead$Invalid;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/ExtraRead$Present : net/plumt/deeplink/android/ExtraRead {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead$Present;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/ExtraRead$Present;Ljava/lang/Object;ILjava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead$Present;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class net/plumt/deeplink/android/IntentReadResult {
+}
+
+public final class net/plumt/deeplink/android/IntentReadResult$Link : net/plumt/deeplink/android/IntentReadResult {
+	public fun <init> (Lnet/plumt/deeplink/DeepLinkRequest;)V
+	public final fun component1 ()Lnet/plumt/deeplink/DeepLinkRequest;
+	public final fun copy (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/android/IntentReadResult$Link;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/IntentReadResult$Link;Lnet/plumt/deeplink/DeepLinkRequest;ILjava/lang/Object;)Lnet/plumt/deeplink/android/IntentReadResult$Link;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRequest ()Lnet/plumt/deeplink/DeepLinkRequest;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/IntentReadResult$NotDeepLink : net/plumt/deeplink/android/IntentReadResult {
+	public static final field INSTANCE Lnet/plumt/deeplink/android/IntentReadResult$NotDeepLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/IntentReadResult$Unsafe : net/plumt/deeplink/android/IntentReadResult {
+	public fun <init> (Lnet/plumt/deeplink/android/UnsafeIntentReason;)V
+	public final fun component1 ()Lnet/plumt/deeplink/android/UnsafeIntentReason;
+	public final fun copy (Lnet/plumt/deeplink/android/UnsafeIntentReason;)Lnet/plumt/deeplink/android/IntentReadResult$Unsafe;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/IntentReadResult$Unsafe;Lnet/plumt/deeplink/android/UnsafeIntentReason;ILjava/lang/Object;)Lnet/plumt/deeplink/android/IntentReadResult$Unsafe;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Lnet/plumt/deeplink/android/UnsafeIntentReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/SafeExtras {
+	public static final field DEFAULT_MAX_LENGTH I
+	public static final field INSTANCE Lnet/plumt/deeplink/android/SafeExtras;
+	public static final fun boolean (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
+	public static final fun int (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
+	public static final fun long (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
+	public static final fun string (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
+	public static final fun string (Landroid/content/Intent;Ljava/lang/String;I)Lnet/plumt/deeplink/android/ExtraRead;
+	public static synthetic fun string$default (Landroid/content/Intent;Ljava/lang/String;IILjava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead;
+}
+
+public final class net/plumt/deeplink/android/TrustedCaller {
+	public fun <init> (Ljava/lang/String;Ljava/util/Set;)V
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getSha256Digests ()Ljava/util/Set;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/UnsafeIntentReason : java/lang/Enum {
+	public static final field HAS_SELECTOR Lnet/plumt/deeplink/android/UnsafeIntentReason;
+	public static final field UNREADABLE_EXTRAS Lnet/plumt/deeplink/android/UnsafeIntentReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/android/UnsafeIntentReason;
+	public static fun values ()[Lnet/plumt/deeplink/android/UnsafeIntentReason;
+}
+

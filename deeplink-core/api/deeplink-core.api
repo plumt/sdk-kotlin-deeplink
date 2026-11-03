@@ -1,0 +1,593 @@
+public final class net/plumt/deeplink/CallerIdentity {
+	public static final field Companion Lnet/plumt/deeplink/CallerIdentity$Companion;
+	public static final field UNKNOWN Lnet/plumt/deeplink/CallerIdentity;
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/CallerVerification;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getVerification ()Lnet/plumt/deeplink/CallerVerification;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/CallerIdentity$Companion {
+}
+
+public final class net/plumt/deeplink/CallerVerification : java/lang/Enum {
+	public static final field CLAIMED Lnet/plumt/deeplink/CallerVerification;
+	public static final field NONE Lnet/plumt/deeplink/CallerVerification;
+	public static final field OS_VERIFIED Lnet/plumt/deeplink/CallerVerification;
+	public static final field SIGNATURE_VERIFIED Lnet/plumt/deeplink/CallerVerification;
+	public static final field SYSTEM_REPORTED Lnet/plumt/deeplink/CallerVerification;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/CallerVerification;
+	public static fun values ()[Lnet/plumt/deeplink/CallerVerification;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkChain {
+	public abstract fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public abstract fun proceed (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class net/plumt/deeplink/DeepLinkException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkHandler {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinkHandler$Companion;
+	public static fun builder ()Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public abstract fun getRoutes ()Ljava/util/List;
+	public abstract fun handle (Lnet/plumt/deeplink/DeepLinkRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun resolve (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkResolution;
+	public abstract fun resume (Lnet/plumt/deeplink/ResolvedDeepLink;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class net/plumt/deeplink/DeepLinkHandler$Builder {
+	public final fun build ()Lnet/plumt/deeplink/DeepLinkHandler;
+	public final fun interceptor (Lnet/plumt/deeplink/DeepLinkInterceptor;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public final fun listener (Lnet/plumt/deeplink/DeepLinkListener;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public final fun route (Lnet/plumt/deeplink/DeepLinkRoute;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public final fun router (Lnet/plumt/deeplink/DeepLinkRouter;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public final fun routes (Ljava/lang/Iterable;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public final fun trustPolicy (Lnet/plumt/deeplink/TrustPolicy;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+	public final fun uriRules (Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+}
+
+public final class net/plumt/deeplink/DeepLinkHandler$Companion {
+	public final fun builder ()Lnet/plumt/deeplink/DeepLinkHandler$Builder;
+}
+
+public final class net/plumt/deeplink/DeepLinkHandlerKt {
+	public static final fun deepLinkHandler (Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkHandler;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkInterceptor {
+	public fun getPriority ()I
+	public abstract fun intercept (Lnet/plumt/deeplink/DeepLinkChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class net/plumt/deeplink/DeepLinkInterceptor$DefaultImpls {
+	public static fun getPriority (Lnet/plumt/deeplink/DeepLinkInterceptor;)I
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkListener {
+	public abstract fun onOutcome (Lnet/plumt/deeplink/DeepLinkOutcome;)V
+}
+
+public abstract class net/plumt/deeplink/DeepLinkOutcome {
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Deferred : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;Ljava/lang/String;)V
+	public final fun component1 ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lnet/plumt/deeplink/ResolvedDeepLink;Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkOutcome$Deferred;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkOutcome$Deferred;Lnet/plumt/deeplink/ResolvedDeepLink;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkOutcome$Deferred;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Failed : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkException;)V
+	public final fun component1 ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun component2 ()Lnet/plumt/deeplink/DeepLinkException;
+	public final fun copy (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkException;)Lnet/plumt/deeplink/DeepLinkOutcome$Failed;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkOutcome$Failed;Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkException;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkOutcome$Failed;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCause ()Lnet/plumt/deeplink/DeepLinkException;
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Handled : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;)V
+	public final fun component1 ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun copy (Lnet/plumt/deeplink/ResolvedDeepLink;)Lnet/plumt/deeplink/DeepLinkOutcome$Handled;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkOutcome$Handled;Lnet/plumt/deeplink/ResolvedDeepLink;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkOutcome$Handled;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Rejected : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/Rejection;)V
+	public final fun component1 ()Lnet/plumt/deeplink/Rejection;
+	public final fun copy (Lnet/plumt/deeplink/Rejection;)Lnet/plumt/deeplink/DeepLinkOutcome$Rejected;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkOutcome$Rejected;Lnet/plumt/deeplink/Rejection;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkOutcome$Rejected;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRejection ()Lnet/plumt/deeplink/Rejection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Unhandled : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;)V
+	public final fun component1 ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun copy (Lnet/plumt/deeplink/ResolvedDeepLink;)Lnet/plumt/deeplink/DeepLinkOutcome$Unhandled;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkOutcome$Unhandled;Lnet/plumt/deeplink/ResolvedDeepLink;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkOutcome$Unhandled;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkRequest {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/CallerIdentity;)V
+	public synthetic fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/CallerIdentity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getCaller ()Lnet/plumt/deeplink/CallerIdentity;
+	public final fun getUri ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class net/plumt/deeplink/DeepLinkResolution {
+}
+
+public final class net/plumt/deeplink/DeepLinkResolution$Rejected : net/plumt/deeplink/DeepLinkResolution {
+	public fun <init> (Lnet/plumt/deeplink/Rejection;)V
+	public final fun component1 ()Lnet/plumt/deeplink/Rejection;
+	public final fun copy (Lnet/plumt/deeplink/Rejection;)Lnet/plumt/deeplink/DeepLinkResolution$Rejected;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkResolution$Rejected;Lnet/plumt/deeplink/Rejection;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkResolution$Rejected;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRejection ()Lnet/plumt/deeplink/Rejection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkResolution$Resolved : net/plumt/deeplink/DeepLinkResolution {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;)V
+	public final fun component1 ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun copy (Lnet/plumt/deeplink/ResolvedDeepLink;)Lnet/plumt/deeplink/DeepLinkResolution$Resolved;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/DeepLinkResolution$Resolved;Lnet/plumt/deeplink/ResolvedDeepLink;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkResolution$Resolved;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkRoute {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinkRoute$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/RouteMatcher;Ljava/util/Map;Ljava/util/Map;Lnet/plumt/deeplink/TrustLevel;Lnet/plumt/deeplink/UnknownQueryPolicy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public static final fun builder (Ljava/lang/String;Lnet/plumt/deeplink/RouteMatcher;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getMatcher ()Lnet/plumt/deeplink/RouteMatcher;
+	public final fun getPathParams ()Ljava/util/Map;
+	public final fun getQueryParams ()Ljava/util/Map;
+	public final fun getRequiredTrust ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun getUnknownQueryPolicy ()Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkRoute$Builder {
+	public final fun build ()Lnet/plumt/deeplink/DeepLinkRoute;
+	public final fun pathParam (Lnet/plumt/deeplink/Param;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun queryParam (Lnet/plumt/deeplink/Param;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun queryParam (Lnet/plumt/deeplink/Param;Z)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public static synthetic fun queryParam$default (Lnet/plumt/deeplink/DeepLinkRoute$Builder;Lnet/plumt/deeplink/Param;ZILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun requiredTrust (Lnet/plumt/deeplink/TrustLevel;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun unknownQueryParameters (Lnet/plumt/deeplink/UnknownQueryPolicy;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+}
+
+public final class net/plumt/deeplink/DeepLinkRoute$Companion {
+	public final fun builder (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun builder (Ljava/lang/String;Lnet/plumt/deeplink/RouteMatcher;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+}
+
+public final class net/plumt/deeplink/DeepLinkRouteKt {
+	public static final fun deepLinkRoute (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkRoute;
+	public static synthetic fun deepLinkRoute$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkRoute;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkRouter {
+	public abstract fun route (Lnet/plumt/deeplink/ResolvedDeepLink;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class net/plumt/deeplink/DeepLinkUri {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinkUri$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPathSegments ()Ljava/util/List;
+	public final fun getPort ()Ljava/lang/Integer;
+	public final fun getQueryParameters ()Ljava/util/Map;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static final fun parse (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static final fun parse (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static final fun parseOrNull (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static final fun parseOrNull (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun queryParameter (Ljava/lang/String;)Ljava/lang/String;
+	public final fun redacted ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkUri$Companion {
+	public final fun parse (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun parse (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static synthetic fun parse$default (Lnet/plumt/deeplink/DeepLinkUri$Companion;Ljava/lang/String;Lnet/plumt/deeplink/UriRules;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun parseOrNull (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun parseOrNull (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static synthetic fun parseOrNull$default (Lnet/plumt/deeplink/DeepLinkUri$Companion;Ljava/lang/String;Lnet/plumt/deeplink/UriRules;ILjava/lang/Object;)Lnet/plumt/deeplink/DeepLinkUri;
+}
+
+public final class net/plumt/deeplink/LimitKind : java/lang/Enum {
+	public static final field PATH_SEGMENTS Lnet/plumt/deeplink/LimitKind;
+	public static final field QUERY_PARAMETERS Lnet/plumt/deeplink/LimitKind;
+	public static final field QUERY_VALUE_LENGTH Lnet/plumt/deeplink/LimitKind;
+	public static final field SEGMENT_LENGTH Lnet/plumt/deeplink/LimitKind;
+	public static final field URI_LENGTH Lnet/plumt/deeplink/LimitKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/LimitKind;
+	public static fun values ()[Lnet/plumt/deeplink/LimitKind;
+}
+
+public final class net/plumt/deeplink/MalformedReason : java/lang/Enum {
+	public static final field DOT_SEGMENT Lnet/plumt/deeplink/MalformedReason;
+	public static final field DOUBLE_ENCODING Lnet/plumt/deeplink/MalformedReason;
+	public static final field EMPTY Lnet/plumt/deeplink/MalformedReason;
+	public static final field EMPTY_SEGMENT Lnet/plumt/deeplink/MalformedReason;
+	public static final field ENCODED_SLASH Lnet/plumt/deeplink/MalformedReason;
+	public static final field ILLEGAL_CHARACTER Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_HOST Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_PERCENT_ENCODING Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_PORT Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_QUERY Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_SCHEME Lnet/plumt/deeplink/MalformedReason;
+	public static final field MISSING_AUTHORITY Lnet/plumt/deeplink/MalformedReason;
+	public static final field USERINFO_NOT_ALLOWED Lnet/plumt/deeplink/MalformedReason;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/MalformedReason;
+	public static fun values ()[Lnet/plumt/deeplink/MalformedReason;
+}
+
+public final class net/plumt/deeplink/Param {
+	public static final field Companion Lnet/plumt/deeplink/Param$Companion;
+	public static final field DEFAULT_MAX_LENGTH I
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/ParamValidator;)V
+	public static final fun boolean (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getValidator ()Lnet/plumt/deeplink/ParamValidator;
+	public static final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public static final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/Param;
+	public static final fun int (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public static final fun int (Ljava/lang/String;Lkotlin/ranges/IntRange;)Lnet/plumt/deeplink/Param;
+	public static final fun long (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public static final fun long (Ljava/lang/String;Lkotlin/ranges/LongRange;)Lnet/plumt/deeplink/Param;
+	public static final fun oneOf (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;I)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;ILkotlin/text/Regex;)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;ILkotlin/text/Regex;Z)Lnet/plumt/deeplink/Param;
+	public fun toString ()Ljava/lang/String;
+	public static final fun uuid (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+}
+
+public final class net/plumt/deeplink/Param$Companion {
+	public final fun boolean (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/Param;
+	public static synthetic fun httpsUrl$default (Lnet/plumt/deeplink/Param$Companion;Ljava/lang/String;Ljava/util/Set;Lnet/plumt/deeplink/UriRules;ILjava/lang/Object;)Lnet/plumt/deeplink/Param;
+	public final fun int (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun int (Ljava/lang/String;Lkotlin/ranges/IntRange;)Lnet/plumt/deeplink/Param;
+	public static synthetic fun int$default (Lnet/plumt/deeplink/Param$Companion;Ljava/lang/String;Lkotlin/ranges/IntRange;ILjava/lang/Object;)Lnet/plumt/deeplink/Param;
+	public final fun long (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun long (Ljava/lang/String;Lkotlin/ranges/LongRange;)Lnet/plumt/deeplink/Param;
+	public static synthetic fun long$default (Lnet/plumt/deeplink/Param$Companion;Ljava/lang/String;Lkotlin/ranges/LongRange;ILjava/lang/Object;)Lnet/plumt/deeplink/Param;
+	public final fun oneOf (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;I)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;ILkotlin/text/Regex;)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;ILkotlin/text/Regex;Z)Lnet/plumt/deeplink/Param;
+	public static synthetic fun string$default (Lnet/plumt/deeplink/Param$Companion;Ljava/lang/String;ILkotlin/text/Regex;ZILjava/lang/Object;)Lnet/plumt/deeplink/Param;
+	public final fun uuid (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+}
+
+public abstract class net/plumt/deeplink/ParamCheck {
+}
+
+public final class net/plumt/deeplink/ParamCheck$Invalid : net/plumt/deeplink/ParamCheck {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/plumt/deeplink/ParamCheck$Invalid;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/ParamCheck$Invalid;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/ParamCheck$Invalid;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ParamCheck$Valid : net/plumt/deeplink/ParamCheck {
+	public fun <init> (Ljava/lang/Object;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun copy (Ljava/lang/Object;)Lnet/plumt/deeplink/ParamCheck$Valid;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/ParamCheck$Valid;Ljava/lang/Object;ILjava/lang/Object;)Lnet/plumt/deeplink/ParamCheck$Valid;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/ParamValidator {
+	public abstract fun validate (Ljava/lang/String;)Lnet/plumt/deeplink/ParamCheck;
+}
+
+public final class net/plumt/deeplink/QueryParamSpec {
+	public final fun getParam ()Lnet/plumt/deeplink/Param;
+	public final fun getRequired ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class net/plumt/deeplink/Rejection {
+	public abstract fun getCode ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$Custom : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$Custom;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$Custom;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$Custom;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getCustomCode ()Ljava/lang/String;
+	public final fun getDetail ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$DuplicateParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$DuplicateParameter;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$DuplicateParameter;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$DuplicateParameter;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$InsufficientTrust : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/TrustLevel;Lnet/plumt/deeplink/TrustLevel;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun component3 ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun copy (Ljava/lang/String;Lnet/plumt/deeplink/TrustLevel;Lnet/plumt/deeplink/TrustLevel;)Lnet/plumt/deeplink/Rejection$InsufficientTrust;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$InsufficientTrust;Ljava/lang/String;Lnet/plumt/deeplink/TrustLevel;Lnet/plumt/deeplink/TrustLevel;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$InsufficientTrust;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()Lnet/plumt/deeplink/TrustLevel;
+	public fun getCode ()Ljava/lang/String;
+	public final fun getRequired ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$Intercepted : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$Intercepted;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$Intercepted;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$Intercepted;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$InvalidParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$InvalidParameter;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$InvalidParameter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$InvalidParameter;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getReason ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$Malformed : net/plumt/deeplink/Rejection {
+	public fun <init> (Lnet/plumt/deeplink/MalformedReason;)V
+	public final fun component1 ()Lnet/plumt/deeplink/MalformedReason;
+	public final fun copy (Lnet/plumt/deeplink/MalformedReason;)Lnet/plumt/deeplink/Rejection$Malformed;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$Malformed;Lnet/plumt/deeplink/MalformedReason;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$Malformed;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getReason ()Lnet/plumt/deeplink/MalformedReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$MissingParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$MissingParameter;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$MissingParameter;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$MissingParameter;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$NoMatchingRoute : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$NoMatchingRoute;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$NoMatchingRoute;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$NoMatchingRoute;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$TooLong : net/plumt/deeplink/Rejection {
+	public fun <init> (Lnet/plumt/deeplink/LimitKind;II)V
+	public final fun component1 ()Lnet/plumt/deeplink/LimitKind;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Lnet/plumt/deeplink/LimitKind;II)Lnet/plumt/deeplink/Rejection$TooLong;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$TooLong;Lnet/plumt/deeplink/LimitKind;IIILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$TooLong;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()I
+	public fun getCode ()Ljava/lang/String;
+	public final fun getLimit ()Lnet/plumt/deeplink/LimitKind;
+	public final fun getMax ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$UnexpectedParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$UnexpectedParameter;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$UnexpectedParameter;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$UnexpectedParameter;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$UnknownHost : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Lnet/plumt/deeplink/Rejection$UnknownHost;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$UnknownHost;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$UnknownHost;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPort ()Ljava/lang/Integer;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$UnknownScheme : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lnet/plumt/deeplink/Rejection$UnknownScheme;
+	public static synthetic fun copy$default (Lnet/plumt/deeplink/Rejection$UnknownScheme;Ljava/lang/String;ILjava/lang/Object;)Lnet/plumt/deeplink/Rejection$UnknownScheme;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ResolvedDeepLink {
+	public final fun get (Lnet/plumt/deeplink/Param;)Ljava/lang/Object;
+	public final fun getCaller ()Lnet/plumt/deeplink/CallerIdentity;
+	public final fun getOrNull (Lnet/plumt/deeplink/Param;)Ljava/lang/Object;
+	public final fun getRoute ()Lnet/plumt/deeplink/DeepLinkRoute;
+	public final fun getTrust ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun getUri ()Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun pathValue (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/RouteMatcher {
+	public static final field Companion Lnet/plumt/deeplink/RouteMatcher$Companion;
+	public abstract fun getHost ()Ljava/lang/String;
+	public abstract fun getPattern ()Ljava/lang/String;
+	public abstract fun getScheme ()Ljava/lang/String;
+	public fun getSpecificity ()I
+	public abstract fun match (Lnet/plumt/deeplink/DeepLinkUri;)Ljava/util/Map;
+	public static fun template (Ljava/lang/String;)Lnet/plumt/deeplink/RouteMatcher;
+}
+
+public final class net/plumt/deeplink/RouteMatcher$Companion {
+	public final fun template (Ljava/lang/String;)Lnet/plumt/deeplink/RouteMatcher;
+}
+
+public final class net/plumt/deeplink/RouteMatcher$DefaultImpls {
+	public static fun getSpecificity (Lnet/plumt/deeplink/RouteMatcher;)I
+}
+
+public final class net/plumt/deeplink/TrustLevel : java/lang/Enum {
+	public static final field FIRST_PARTY Lnet/plumt/deeplink/TrustLevel;
+	public static final field PUBLIC Lnet/plumt/deeplink/TrustLevel;
+	public static final field SELF Lnet/plumt/deeplink/TrustLevel;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun satisfies (Lnet/plumt/deeplink/TrustLevel;)Z
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/TrustLevel;
+	public static fun values ()[Lnet/plumt/deeplink/TrustLevel;
+}
+
+public abstract interface class net/plumt/deeplink/TrustPolicy {
+	public static final field Companion Lnet/plumt/deeplink/TrustPolicy$Companion;
+	public abstract fun resolve (Lnet/plumt/deeplink/CallerIdentity;)Lnet/plumt/deeplink/TrustLevel;
+	public static fun standard (Ljava/lang/String;)Lnet/plumt/deeplink/TrustPolicy;
+}
+
+public final class net/plumt/deeplink/TrustPolicy$Companion {
+	public final fun standard (Ljava/lang/String;)Lnet/plumt/deeplink/TrustPolicy;
+}
+
+public final class net/plumt/deeplink/UnknownQueryPolicy : java/lang/Enum {
+	public static final field DROP Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public static final field REJECT Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public static fun values ()[Lnet/plumt/deeplink/UnknownQueryPolicy;
+}
+
+public final class net/plumt/deeplink/UriRules {
+	public static final field Companion Lnet/plumt/deeplink/UriRules$Companion;
+	public static final field DEFAULT Lnet/plumt/deeplink/UriRules;
+	public fun <init> ()V
+	public fun <init> (IIIIIZZ)V
+	public synthetic fun <init> (IIIIIZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAllowDoubleEncoding ()Z
+	public final fun getAllowEncodedSlash ()Z
+	public final fun getMaxPathSegments ()I
+	public final fun getMaxQueryParameters ()I
+	public final fun getMaxQueryValueLength ()I
+	public final fun getMaxSegmentLength ()I
+	public final fun getMaxUriLength ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/UriRules$Companion {
+}
+

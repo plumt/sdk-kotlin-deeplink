@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      # Android SDK 는 ubuntu-latest 러너에 미리 깔려 있다(ANDROID_HOME)
+      - uses: gradle/actions/setup-gradle@v4
+      # build 가 apiCheck 와 Robolectric 테스트를 포함한다 — 공개 API 가 .api 와 다르면 실패한다
+      - run: ./gradlew build
