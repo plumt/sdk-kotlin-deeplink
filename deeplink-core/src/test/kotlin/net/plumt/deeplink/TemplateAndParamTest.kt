@@ -79,7 +79,9 @@ class TemplateAndParamTest {
         assertEquals("길이 4 가 상한 3 을 넘는다", p.bad("abcd"))
         assertEquals("이중 인코딩된 값이다", p.bad("%2F"))
         assertEquals("%2F", Param.string("s", allowPercentEscapes = true).ok("%2F"))
-        assertEquals("100%", Param.string("s").ok("100%"))
+        // H1 — '%' 가 남은 값은 16진 꼴이 아니어도 거부한다
+        assertEquals("이중 인코딩된 값이다", Param.string("s").bad("100%"))
+        assertEquals("100%", Param.string("s", allowPercentEscapes = true).ok("100%"))
         val pattern = Param.string("s", pattern = Regex("[a-z]+"))
         assertEquals("abc", pattern.ok("abc"))
         assertEquals("형식이 맞지 않는다", pattern.bad("abc1"))

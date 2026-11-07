@@ -8,6 +8,7 @@ import net.plumt.deeplink.UriRules
 import java.nio.ByteBuffer
 import java.nio.charset.CharacterCodingException
 import java.nio.charset.CodingErrorAction
+import java.text.Normalizer
 
 /**
  * RFC 3986 의 일반 구문을 따르되 보안상 모호한 형태를 모두 거부하는 파서.
@@ -22,9 +23,12 @@ internal object UriParser {
         class Fail(val rejection: Rejection) : Result
     }
 
-    private val SCHEME = Regex("[a-z][a-z0-9+.-]*")
+    // 대소문자 접기 전에 원문으로 검사한다 — 켈빈 기호(U+212A)처럼 소문자화하면 ASCII 가 되는 글자를 막는다
+    private val SCHEME = Regex("[A-Za-z][A-Za-z0-9+.-]*")
     private val HOST_LABEL = Regex("[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?")
-    private val ESCAPE = Regex("%[0-9A-Fa-f]{2}")
+    private val HOST_RAW = Regex("[A-Za-z0-9.-]+")
+    private val NUMERIC_LABEL = Regex("[0-9]+|0x[0-9a-f]*")
+    private val IPV4_OCTET = Regex("0|[1-9][0-9]{0,2}")
     private val DEFAULT_PORTS = mapOf("http" to 80, "https" to 443)
     private const val MAX_PORT = 65535
 
@@ -33,12 +37,13 @@ internal object UriParser {
         if (input.length > rules.maxUriLength) {
             return Result.Fail(Rejection.TooLong(LimitKind.URI_LENGTH, rules.maxUriLength, input.length))
         }
-        if (input.any(::isIllegalRaw)) return malformed(MalformedReason.ILLEGAL_CHARACTER)
+        if (input.any(::isIllegalRaw) || hasLoneSurrogate(input)) return malformed(MalformedReason.ILLEGAL_CHARACTER)
 
         val colon = input.indexOf(':')
         if (colon <= 0) return malformed(MalformedReason.INVALID_SCHEME)
-        val scheme = input.substring(0, colon).lowercase()
-        if (!SCHEME.matches(scheme)) return malformed(MalformedReason.INVALID_SCHEME)
+        val rawScheme = input.substring(0, colon)
+        if (!SCHEME.matches(rawScheme)) return malformed(MalformedReason.INVALID_SCHEME)
+        val scheme = rawScheme.lowercase()
 
         var rest = input.substring(colon + 1)
         if (!rest.startsWith("//")) return malformed(MalformedReason.MISSING_AUTHORITY)
@@ -85,14 +90,20 @@ internal object UriParser {
         val hostPart = if (portAt >= 0) authority.substring(0, portAt) else authority
         val portPart = if (portAt >= 0) authority.substring(portAt + 1) else null
 
+        if (hostPart.isEmpty() || hostPart.length > 253 || !HOST_RAW.matches(hostPart)) {
+            return authorityFail(MalformedReason.INVALID_HOST)
+        }
         val host = hostPart.lowercase()
-        if (host.isEmpty() || host.length > 253) return authorityFail(MalformedReason.INVALID_HOST)
-        if (!host.split('.').all { HOST_LABEL.matches(it) }) return authorityFail(MalformedReason.INVALID_HOST)
+        val labels = host.split('.')
+        if (!labels.all { HOST_LABEL.matches(it) }) return authorityFail(MalformedReason.INVALID_HOST)
+        // 마지막 라벨이 숫자면 브라우저는 IPv4 로 읽는다(0x7f.1·127.1·2130706433). 정규형 점 네 개 표기만 받는다
+        if (NUMERIC_LABEL.matches(labels.last()) && !isCanonicalIpv4(labels)) return authorityFail(MalformedReason.INVALID_HOST)
 
         val port: Int? = if (portPart == null) {
             null
         } else {
-            if (portPart.isEmpty() || portPart.length > 5 || !portPart.all { it in '0'..'9' }) {
+            // 앞자리 0(':0443')은 같은 포트의 다른 표기다
+            if (portPart.isEmpty() || portPart.length > 5 || !portPart.all { it in '0'..'9' } || portPart[0] == '0') {
                 return authorityFail(MalformedReason.INVALID_PORT)
             }
             val value = portPart.toInt()
@@ -104,6 +115,9 @@ internal object UriParser {
     }
 
     private fun authorityFail(reason: MalformedReason) = AuthorityResult.Fail(Rejection.Malformed(reason))
+
+    private fun isCanonicalIpv4(labels: List<String>): Boolean =
+        labels.size == 4 && labels.all { IPV4_OCTET.matches(it) && it.toInt() <= 255 }
 
     private sealed interface PathResult {
         class Ok(val segments: List<String>) : PathResult
@@ -126,8 +140,9 @@ internal object UriParser {
             if (!rules.allowEncodedSlash && (value.contains('/') || value.contains('\\'))) {
                 return pathFail(MalformedReason.ENCODED_SLASH)
             }
-            if (!rules.allowDoubleEncoding && ESCAPE.containsMatchIn(value)) return pathFail(MalformedReason.DOUBLE_ENCODING)
+            if (!rules.allowDoubleEncoding && value.contains('%')) return pathFail(MalformedReason.DOUBLE_ENCODING)
             if (value.any(::isIllegalDecoded)) return pathFail(MalformedReason.ILLEGAL_CHARACTER)
+            if (!rules.allowUnnormalized && !isNfkc(value)) return pathFail(MalformedReason.NOT_NORMALIZED)
             if (value.length > rules.maxSegmentLength) {
                 return PathResult.Fail(Rejection.TooLong(LimitKind.SEGMENT_LENGTH, rules.maxSegmentLength, value.length))
             }
@@ -157,10 +172,11 @@ internal object UriParser {
             val name = decode(rawName, plusAsSpace = true) ?: return queryFail(MalformedReason.INVALID_PERCENT_ENCODING)
             val value = decode(rawValue, plusAsSpace = true) ?: return queryFail(MalformedReason.INVALID_PERCENT_ENCODING)
             if (name.isEmpty()) return queryFail(MalformedReason.INVALID_QUERY)
-            if (!rules.allowDoubleEncoding && ESCAPE.containsMatchIn(name)) return queryFail(MalformedReason.DOUBLE_ENCODING)
+            if (!rules.allowDoubleEncoding && name.contains('%')) return queryFail(MalformedReason.DOUBLE_ENCODING)
             if (name.any(::isIllegalDecoded) || value.any(::isIllegalDecoded)) {
                 return queryFail(MalformedReason.ILLEGAL_CHARACTER)
             }
+            if (!rules.allowUnnormalized && !isNfkc(name)) return queryFail(MalformedReason.NOT_NORMALIZED)
             if (value.length > rules.maxQueryValueLength) {
                 return QueryResult.Fail(Rejection.TooLong(LimitKind.QUERY_VALUE_LENGTH, rules.maxQueryValueLength, value.length))
             }
@@ -171,9 +187,13 @@ internal object UriParser {
 
     private fun queryFail(reason: MalformedReason) = QueryResult.Fail(Rejection.Malformed(reason))
 
+    /** NFKC 정규화해도 그대로인가. 아니면 하류의 정규화(파일 시스템·IDNA)가 `．．` 를 `..` 로 바꾼다. */
+    private fun isNfkc(value: String): Boolean = value.all { it.code < 128 } || Normalizer.isNormalized(value, Normalizer.Form.NFKC)
+
     /**
      * 퍼센트 디코딩을 정확히 한 번 한다. 잘못된 이스케이프·잘못된 UTF-8 이면 `null`.
      * `URLDecoder` 는 잘못된 UTF-8 을 U+FFFD 로 바꿔 삼키므로 쓰지 않는다.
+     * 16진 숫자는 RFC 3986 의 HEXDIG(ASCII `0-9A-Fa-f`)만 받는다 — `Character.digit` 은 아랍·전각 숫자도 받는다.
      */
     fun decode(raw: String, plusAsSpace: Boolean): String? {
         if (raw.indexOf('%') < 0) return if (plusAsSpace) raw.replace('+', ' ') else raw
@@ -184,8 +204,8 @@ internal object UriParser {
             val c = raw[i]
             if (c == '%') {
                 if (i + 2 >= raw.length) return null
-                val hi = Character.digit(raw[i + 1], 16)
-                val lo = Character.digit(raw[i + 2], 16)
+                val hi = hexValue(raw[i + 1])
+                val lo = hexValue(raw[i + 2])
                 if (hi < 0 || lo < 0) return null
                 bytes.write(hi * 16 + lo)
                 i += 3
@@ -200,6 +220,29 @@ internal object UriParser {
         }
         if (bytes.size() > 0) out.append(decodeUtf8(bytes.toByteArray()) ?: return null)
         return out.toString()
+    }
+
+    /** UTF-8 퍼센트 인코딩. unreserved(`A-Za-z0-9-._~`) 외에는 모두 `%XX`(대문자)로 바꾼다. */
+    fun encode(value: String): String {
+        val out = StringBuilder(value.length)
+        for (b in value.toByteArray(Charsets.UTF_8)) {
+            val c = (b.toInt() and 0xFF).toChar()
+            if (c in 'A'..'Z' || c in 'a'..'z' || c in '0'..'9' || c in "-._~") {
+                out.append(c)
+            } else {
+                out.append('%').append(HEX[c.code shr 4]).append(HEX[c.code and 0xF])
+            }
+        }
+        return out.toString()
+    }
+
+    private const val HEX = "0123456789ABCDEF"
+
+    private fun hexValue(c: Char): Int = when (c) {
+        in '0'..'9' -> c - '0'
+        in 'a'..'f' -> c - 'a' + 10
+        in 'A'..'F' -> c - 'A' + 10
+        else -> -1
     }
 
     private fun decodeUtf8(bytes: ByteArray): String? = try {
@@ -225,6 +268,22 @@ internal object UriParser {
         // 양방향 재정렬(U+202E 등)·폭 없는 문자(U+200B 등)는 사람이 보는 값과 실제 값을 다르게 만든다
         return type == Character.FORMAT.toInt() || type == Character.UNASSIGNED.toInt() ||
             type == Character.PRIVATE_USE.toInt()
+    }
+
+    /** 짝 없는 서로게이트. UTF-8 로 옮기면 `?` 로 바뀌어 같은 값을 다시 만들 수 없다. */
+    private fun hasLoneSurrogate(s: String): Boolean {
+        var i = 0
+        while (i < s.length) {
+            val c = s[i]
+            if (Character.isHighSurrogate(c)) {
+                if (i + 1 >= s.length || !Character.isLowSurrogate(s[i + 1])) return true
+                i += 2
+            } else {
+                if (Character.isLowSurrogate(c)) return true
+                i++
+            }
+        }
+        return false
     }
 
     private val RAW_FORBIDDEN = setOf('\\', '"', '<', '>', '`', '{', '}', '|', '^')

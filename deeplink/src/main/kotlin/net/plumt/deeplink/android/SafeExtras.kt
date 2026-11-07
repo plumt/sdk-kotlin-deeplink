@@ -31,6 +31,11 @@ public enum class ExtraInvalidReason {
  *
  * Intent·PendingIntent·Bundle·Parcelable·Uri 를 읽는 함수는 일부러 없다. 받은 Intent 를 그대로
  * `startActivity` 하면 외부 앱이 우리 권한으로 비공개 컴포넌트를 열게 된다(인텐트 리다이렉션).
+ *
+ * **역직렬화 주의**: 키 하나를 읽으면 그 키의 값은 타입을 확인하기 **전에** 역직렬화된다. 발신 앱이 그 키에
+ * Parcelable·Serializable 을 넣었다면 앱 클래스로더로 만들어진 뒤 [ExtraInvalidReason.WRONG_TYPE] 이 된다.
+ * API 33+ 는 읽은 키의 값만, API 23~32 는 extras 에 처음 닿을 때 Bundle 전체가 역직렬화된다.
+ * 신뢰할 수 없는 발신자의 extras 는 꼭 필요한 키만 읽는다.
  */
 public object SafeExtras {
 

@@ -40,9 +40,8 @@ public class Param<out T : Any>(
 
     public companion object {
         private val NAME = Regex("[A-Za-z0-9_.-]{1,64}")
-        private val INT_TEXT = Regex("-?(0|[1-9][0-9]*)")
+        private val INT_TEXT = Regex("0|-?[1-9][0-9]*")
         private val UUID_TEXT = Regex("[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}")
-        private val ESCAPE = Regex("%[0-9A-Fa-f]{2}")
 
         /** 템플릿에 있는데 선언하지 않은 경로 파라미터에 쓰는 기본 길이 상한. */
         public const val DEFAULT_MAX_LENGTH: Int = 256
@@ -52,7 +51,8 @@ public class Param<out T : Any>(
          *
          * @param maxLength 최대 길이(문자 수). 1 이상
          * @param pattern 값 전체가 맞아야 하는 정규식. `null` 이면 검사하지 않는다
-         * @param allowPercentEscapes 디코딩한 값에 `%XX` 가 남아도 받을지. 기본 거부(이중 인코딩)
+         * @param allowPercentEscapes 디코딩한 값에 `%` 가 남아도 받을지. 기본 거부(이중 인코딩).
+         *   `%` 뒤가 16진수 꼴이 아니어도 거부한다 — JDK `URLDecoder` 처럼 비 ASCII 숫자를 16진으로 읽는 하류가 있다
          * @throws IllegalArgumentException [maxLength] 가 1 미만일 때
          */
         @JvmStatic
@@ -68,7 +68,7 @@ public class Param<out T : Any>(
                 when {
                     raw.isEmpty() -> ParamCheck.Invalid("비어 있다")
                     raw.length > maxLength -> ParamCheck.Invalid("길이 ${raw.length} 가 상한 $maxLength 을 넘는다")
-                    !allowPercentEscapes && ESCAPE.containsMatchIn(raw) -> ParamCheck.Invalid("이중 인코딩된 값이다")
+                    !allowPercentEscapes && raw.contains('%') -> ParamCheck.Invalid("이중 인코딩된 값이다")
                     pattern != null && !pattern.matches(raw) -> ParamCheck.Invalid("형식이 맞지 않는다")
                     else -> ParamCheck.Valid(raw)
                 }
@@ -76,7 +76,7 @@ public class Param<out T : Any>(
         }
 
         /**
-         * 10진 정수. 앞자리 0·`+` 부호는 받지 않는다(같은 값의 다른 표기를 막는다).
+         * 10진 정수. 앞자리 0·`+` 부호·`-0` 은 받지 않는다(같은 값의 다른 표기를 막는다).
          *
          * @throws IllegalArgumentException [range] 가 비었을 때
          */

@@ -106,7 +106,7 @@ public enum class MalformedReason {
     /** 포트가 숫자가 아니거나 범위를 벗어났다. */
     INVALID_PORT,
 
-    /** `%` 뒤에 16진 두 자리가 오지 않았거나 디코딩 결과가 올바른 UTF-8 이 아니다. */
+    /** `%` 뒤에 ASCII 16진 두 자리가 오지 않았거나 디코딩 결과가 올바른 UTF-8 이 아니다. */
     INVALID_PERCENT_ENCODING,
 
     /** 경로 중간에 빈 조각(`//`)이 있다. */
@@ -118,8 +118,11 @@ public enum class MalformedReason {
     /** 디코딩하면 `/`·`\` 가 되는 경로 조각이 있다. */
     ENCODED_SLASH,
 
-    /** 한 번 디코딩한 뒤에도 `%XX` 가 남아 있다. */
+    /** 한 번 디코딩한 경로 조각·쿼리 이름에 `%` 가 남아 있다. */
     DOUBLE_ENCODING,
+
+    /** 경로 조각·쿼리 이름이 NFKC 정규형이 아니다(전각 `．`·`／`, 조합 문자 등). [UriRules.allowUnnormalized] 참고. */
+    NOT_NORMALIZED,
 
     /** 쿼리 이름이 비었다. */
     INVALID_QUERY,

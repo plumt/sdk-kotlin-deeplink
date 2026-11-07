@@ -16,8 +16,8 @@ public final class net/plumt/deeplink/CallerVerification : java/lang/Enum {
 	public static final field CLAIMED Lnet/plumt/deeplink/CallerVerification;
 	public static final field NONE Lnet/plumt/deeplink/CallerVerification;
 	public static final field OS_VERIFIED Lnet/plumt/deeplink/CallerVerification;
+	public static final field SELF_ISSUED Lnet/plumt/deeplink/CallerVerification;
 	public static final field SIGNATURE_VERIFIED Lnet/plumt/deeplink/CallerVerification;
-	public static final field SYSTEM_REPORTED Lnet/plumt/deeplink/CallerVerification;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/CallerVerification;
 	public static fun values ()[Lnet/plumt/deeplink/CallerVerification;
@@ -223,6 +223,7 @@ public final class net/plumt/deeplink/DeepLinkUri {
 	public final fun queryParameter (Ljava/lang/String;)Ljava/lang/String;
 	public final fun redacted ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
+	public final fun toUriString ()Ljava/lang/String;
 }
 
 public final class net/plumt/deeplink/DeepLinkUri$Companion {
@@ -258,6 +259,7 @@ public final class net/plumt/deeplink/MalformedReason : java/lang/Enum {
 	public static final field INVALID_QUERY Lnet/plumt/deeplink/MalformedReason;
 	public static final field INVALID_SCHEME Lnet/plumt/deeplink/MalformedReason;
 	public static final field MISSING_AUTHORITY Lnet/plumt/deeplink/MalformedReason;
+	public static final field NOT_NORMALIZED Lnet/plumt/deeplink/MalformedReason;
 	public static final field USERINFO_NOT_ALLOWED Lnet/plumt/deeplink/MalformedReason;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/MalformedReason;
@@ -576,10 +578,11 @@ public final class net/plumt/deeplink/UriRules {
 	public static final field Companion Lnet/plumt/deeplink/UriRules$Companion;
 	public static final field DEFAULT Lnet/plumt/deeplink/UriRules;
 	public fun <init> ()V
-	public fun <init> (IIIIIZZ)V
-	public synthetic fun <init> (IIIIIZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (IIIIIZZZ)V
+	public synthetic fun <init> (IIIIIZZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getAllowDoubleEncoding ()Z
 	public final fun getAllowEncodedSlash ()Z
+	public final fun getAllowUnnormalized ()Z
 	public final fun getMaxPathSegments ()I
 	public final fun getMaxQueryParameters ()I
 	public final fun getMaxQueryValueLength ()I

@@ -23,6 +23,7 @@ class FuzzTest {
 
     private val alphabet = (
         "abcxyzAZ09-._~:/?#[]@!$&'()*+,;=%% \t\n\r\\\"<>{}|^`" +
+            "\u0662\u0666\uFF12\uFF26\uFF0E\uFF0F\u212A\u0130" +
             "\u0000\u001f\u007f ​‮﻿𐀀한글😀"
         ).toList()
 
@@ -51,7 +52,7 @@ class FuzzTest {
 
     private fun check(input: String) {
         val resolution = try {
-            handler.resolve(DeepLinkRequest(input, CallerIdentity("my.app", CallerVerification.SYSTEM_REPORTED)))
+            handler.resolve(DeepLinkRequest(input, CallerIdentity("my.app", CallerVerification.SELF_ISSUED)))
         } catch (e: Throwable) {
             fail("예외가 났다: ${e.javaClass.name} for ${input.toByteArray().joinToString()}")
             return
@@ -65,10 +66,20 @@ class FuzzTest {
             // 통과한 URI 의 조각·값에는 제어 문자·서식 문자·경로 구분자가 없다
             uri.pathSegments.forEach { seg ->
                 assertTrue(seg.isNotEmpty() && '/' !in seg && '\\' !in seg && seg != "." && seg != "..")
+                // 이중 인코딩 방어: 하류가 어떤 디코더로 한 번 더 풀어도 바뀌지 않는다
+                assertTrue('%' !in seg && java.text.Normalizer.isNormalized(seg, java.text.Normalizer.Form.NFKC))
                 assertTrue(seg.none { Character.isISOControl(it) || Character.getType(it) == Character.FORMAT.toInt() })
             }
+            uri.queryParameters.keys.forEach { assertTrue('%' !in it) }
+            assertTrue(uri.host.all { it.code < 128 } && uri.scheme.all { it.code < 128 })
             // redacted 는 항상 ASCII 출력 가능 문자만
             assertTrue(uri.redacted().all { it.code in 0x21..0x7e })
+        }
+        // 통과한 모든 URI 는 정규형으로 되돌려 다시 읽어도 같다(길이 상한만 늘린다)
+        DeepLinkUri.parseOrNull(input)?.let { uri ->
+            val text = uri.toUriString()
+            assertTrue(text.all { it.code in 0x21..0x7e })
+            assertEquals(input, uri, DeepLinkUri.parse(text, UriRules(maxUriLength = 100_000)))
         }
     }
 

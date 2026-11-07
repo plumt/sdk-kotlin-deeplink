@@ -36,39 +36,47 @@ class IntentReaderTest {
 
     @Test fun `딥링크가 아닌 인텐트`() {
         val activity = launch(view())
-        assertEquals(IntentReadResult.NotDeepLink, reader.read(activity, null))
-        assertEquals(IntentReadResult.NotDeepLink, reader.read(activity, Intent(Intent.ACTION_MAIN, Uri.parse("myapp://x"))))
-        assertEquals(IntentReadResult.NotDeepLink, reader.read(activity, Intent(Intent.ACTION_VIEW)))
-        assertEquals(IntentReadResult.NotDeepLink, reader.read(activity, Intent()))
+        assertEquals(IntentReadResult.NotDeepLink, reader.readNewIntent(activity, Intent(Intent.ACTION_MAIN, Uri.parse("myapp://x"))))
+        assertEquals(IntentReadResult.NotDeepLink, reader.readNewIntent(activity, Intent(Intent.ACTION_VIEW)))
+        assertEquals(IntentReadResult.NotDeepLink, reader.readNewIntent(activity, Intent()))
+        assertEquals(IntentReadResult.NotDeepLink, reader.readLaunch(launch(Intent(Intent.ACTION_MAIN)), null))
+    }
+
+    @Test fun `최근 앱에서 다시 연 실행은 링크가 아니다`() {
+        val intent = view().addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+        assertEquals(IntentReadResult.NotDeepLink, reader.readLaunch(launch(intent), null))
+        // onNewIntent 는 플랫폼이 다시 주는 실행이 아니다
+        assertTrue(reader.readNewIntent(launch(view()), intent) is IntentReadResult.Link)
     }
 
     @Test fun `data 와 발신자만 꺼낸다`() {
         val activity = launch(view("myapp://item/7?t=secret").putExtra("redirect", Intent()), systemReferrer = context.packageName)
-        val link = reader.read(activity) as IntentReadResult.Link
+        val link = reader.readLaunch(activity, null) as IntentReadResult.Link
         assertEquals("myapp://item/7?t=secret", link.request.uri)
-        assertEquals(CallerIdentity(context.packageName, CallerVerification.SYSTEM_REPORTED), link.request.caller)
+        // C1 — 위조할 수 있는 referrer 는 자기 패키지여도 CLAIMED
+        assertEquals(CallerIdentity(context.packageName, CallerVerification.CLAIMED), link.request.caller)
     }
 
     @Test fun `셀렉터가 붙은 인텐트는 Unsafe`() {
         val intent = view().apply { selector = Intent(Intent.ACTION_MAIN).setComponent(ComponentName("a.b", "a.b.C")) }
-        assertEquals(IntentReadResult.Unsafe(UnsafeIntentReason.HAS_SELECTOR), reader.read(launch(view()), intent))
+        assertEquals(IntentReadResult.Unsafe(UnsafeIntentReason.HAS_SELECTOR), reader.readNewIntent(launch(view()), intent))
     }
 
     @Test fun `풀 수 없는 extras 는 Unsafe`() {
         val hostile = object : Intent(ACTION_VIEW, Uri.parse("myapp://item/1")) {
             override fun getExtras(): Bundle = throw BadParcelableException("bad")
         }
-        assertEquals(IntentReadResult.Unsafe(UnsafeIntentReason.UNREADABLE_EXTRAS), reader.read(launch(view()), hostile))
+        assertEquals(IntentReadResult.Unsafe(UnsafeIntentReason.UNREADABLE_EXTRAS), reader.readNewIntent(launch(view()), hostile))
     }
 
     @Test fun `허용 액션 지정과 사용자 판정기`() {
         val fixed = CallerIdentity("a.b", CallerVerification.OS_VERIFIED)
         val custom = DeepLinkIntentReader.create(object : CallerVerifier {
-            override fun identify(activity: android.app.Activity, intent: Intent) = fixed
+            override fun identify(activity: android.app.Activity, intent: Intent, initialLaunch: Boolean) = fixed
         }, setOf("my.action.OPEN"))
         val activity = launch(view())
-        assertEquals(IntentReadResult.NotDeepLink, custom.read(activity, view()))
-        val read = custom.read(activity, Intent("my.action.OPEN", Uri.parse("myapp://x"))) as IntentReadResult.Link
+        assertEquals(IntentReadResult.NotDeepLink, custom.readNewIntent(activity, view()))
+        val read = custom.readNewIntent(activity, Intent("my.action.OPEN", Uri.parse("myapp://x"))) as IntentReadResult.Link
         assertEquals(fixed, read.request.caller)
         assertIae("allowedActions 가 비었다") { DeepLinkIntentReader.create(context, allowedActions = emptySet()) }
         DeepLinkIntentReader.create(context, listOf(TrustedCaller("a.b", setOf(digest(SIG_A)))))
@@ -81,15 +89,26 @@ class IntentReaderTest {
             trustPolicy(AndroidDeepLinks.trustPolicy(context))
             router { routed += it.route.id; true }
         }
-        val own = reader.read(launch(view("myapp://notice"), systemReferrer = context.packageName)) as IntentReadResult.Link
+        val denied = DeepLinkOutcome.Rejected(Rejection.InsufficientTrust("notice", TrustLevel.SELF, TrustLevel.PUBLIC))
+        // 자기 앱이 발급한 링크 — 처음 실행과 onNewIntent 모두 SELF, 토큰은 떼고 넘긴다
+        val issued = AndroidDeepLinks.selfIntent(context, "myapp://notice")
+        val own = reader.readLaunch(launch(issued), null) as IntentReadResult.Link
+        assertEquals("myapp://notice", own.request.uri)
         assertTrue(handler.handle(own.request) is DeepLinkOutcome.Handled)
+        val ownNew = reader.readNewIntent(launch(view()), issued) as IntentReadResult.Link
+        assertTrue(handler.handle(ownNew.request) is DeepLinkOutcome.Handled)
+        // C1 — OS referrer 를 자기 패키지로 위조
+        val forgedReferrer = reader.readLaunch(launch(view("myapp://notice"), systemReferrer = context.packageName), null) as IntentReadResult.Link
+        assertEquals(denied, handler.handle(forgedReferrer.request))
+        // EXTRA_REFERRER 로 주장
         val spoof = view("myapp://notice").putExtra(Intent.EXTRA_REFERRER_NAME, "android-app://${context.packageName}")
-        val claimed = reader.read(launch(spoof, systemReferrer = "evil.app")) as IntentReadResult.Link
-        assertEquals(
-            DeepLinkOutcome.Rejected(Rejection.InsufficientTrust("notice", TrustLevel.SELF, TrustLevel.PUBLIC)),
-            handler.handle(claimed.request),
-        )
-        assertEquals(listOf("notice"), routed)
+        val claimed = reader.readLaunch(launch(spoof, systemReferrer = "evil.app"), null) as IntentReadResult.Link
+        assertEquals(denied, handler.handle(claimed.request))
+        // 위조 토큰 — 토큰 프래그먼트는 떼지만 SELF 는 아니다
+        val fake = reader.readNewIntent(launch(view()), view("myapp://notice#plumt-self=" + "a".repeat(64))) as IntentReadResult.Link
+        assertEquals("myapp://notice", fake.request.uri)
+        assertEquals(denied, handler.handle(fake.request))
+        assertEquals(listOf("notice", "notice"), routed)
     }
 
     @Test fun `무작위 인텐트 5천 건 - 예외 없이 결과`() {
@@ -108,7 +127,7 @@ class IntentReaderTest {
                 4 -> intent.selector = Intent(Intent.ACTION_MAIN)
                 else -> intent.putExtra("n", r.nextLong())
             }
-            val result = reader.read(activity, intent)
+            val result = reader.readNewIntent(activity, intent)
             assertTrue(result is IntentReadResult.Link || result is IntentReadResult.NotDeepLink || result is IntentReadResult.Unsafe)
             SafeExtras.string(intent, "nested")
             SafeExtras.long(intent, "n")
@@ -172,9 +191,13 @@ class AndroidDeepLinksTest {
         val intent = AndroidDeepLinks.selfIntent(context, "myapp://notice?id=1")
         assertEquals(Intent.ACTION_VIEW, intent.action)
         assertEquals(context.packageName, intent.`package`)
-        assertEquals("myapp://notice?id=1", intent.dataString)
+        assertTrue(intent.dataString!!.matches(Regex("myapp://notice\\?id=1#plumt-self=[0-9a-f]{64}")))
         assertNull(intent.extras)
+        // 같은 URI 는 같은 토큰, 다른 URI 는 다른 토큰
+        assertEquals(intent.dataString, AndroidDeepLinks.selfIntent(context, "myapp://notice?id=1").dataString)
+        assertTrue(intent.dataString != AndroidDeepLinks.selfIntent(context, "myapp://notice?id=2").dataString?.replace("id=2", "id=1"))
         assertIae("URI 를 받을 수 없다: Malformed(reason=USERINFO_NOT_ALLOWED)") { AndroidDeepLinks.selfIntent(context, "https://a@b.com") }
+        assertIae("자기 링크에는 프래그먼트(#)를 쓸 수 없다") { AndroidDeepLinks.selfIntent(context, "myapp://notice#plumt-self=x") }
     }
 
     @Test fun `PendingIntent 는 항상 IMMUTABLE`() {
@@ -192,7 +215,8 @@ class AndroidDeepLinksTest {
 
     @Test fun `trustPolicy 는 자기 패키지를 SELF 로`() {
         val policy = AndroidDeepLinks.trustPolicy(context)
-        assertEquals(TrustLevel.SELF, policy.resolve(CallerIdentity(context.packageName, CallerVerification.SYSTEM_REPORTED)))
+        assertEquals(TrustLevel.SELF, policy.resolve(CallerIdentity(context.packageName, CallerVerification.SELF_ISSUED)))
+        assertEquals(TrustLevel.PUBLIC, policy.resolve(CallerIdentity(context.packageName, CallerVerification.OS_VERIFIED)))
         assertEquals(TrustLevel.PUBLIC, policy.resolve(CallerIdentity(context.packageName, CallerVerification.CLAIMED)))
     }
 

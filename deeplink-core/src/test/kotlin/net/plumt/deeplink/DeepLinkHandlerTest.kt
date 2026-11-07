@@ -55,7 +55,7 @@ class DeepLinkHandlerTest {
     private fun link(uri: String, caller: CallerIdentity = CallerIdentity.UNKNOWN): ResolvedDeepLink =
         (resolve(uri, caller) as DeepLinkResolution.Resolved).link
 
-    private val self = CallerIdentity("my.app", CallerVerification.SYSTEM_REPORTED)
+    private val self = CallerIdentity("my.app", CallerVerification.SELF_ISSUED)
     private val partnerApp = CallerIdentity("partner.app", CallerVerification.SIGNATURE_VERIFIED)
 
     @Test fun `정상 - 타입 있는 경로·쿼리 값`() {
@@ -142,7 +142,7 @@ class DeepLinkHandlerTest {
         assertEquals(TrustLevel.SELF, link("myapp://partner", self).trust)
         assertEquals(
             Rejection.InsufficientTrust("partner", TrustLevel.FIRST_PARTY, TrustLevel.PUBLIC),
-            rejection("myapp://partner", CallerIdentity("partner.app", CallerVerification.SYSTEM_REPORTED)),
+            rejection("myapp://partner", CallerIdentity("partner.app", CallerVerification.OS_VERIFIED)),
         )
         // https(App Link) 라는 사실만으로 신뢰가 오르지 않는다
         assertEquals(TrustLevel.PUBLIC, link("https://example.com/p/a").trust)

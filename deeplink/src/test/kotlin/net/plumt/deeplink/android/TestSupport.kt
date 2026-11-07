@@ -48,9 +48,33 @@ private fun signingInfo(signers: Array<Signature>, past: Array<Signature>?): Sig
     return info
 }
 
-/** [intent] 로 띄운 Activity. [systemReferrer] 는 OS 가 채우는 발신 패키지(mReferrer)를 흉내 낸다. */
+/**
+ * [intent] 로 띄운 Activity. [systemReferrer] 는 OS 가 채우는 발신 패키지(mReferrer)를 흉내 낸다 — 발신 앱이
+ * 위조할 수 있는 값이다.
+ */
 internal fun launch(intent: Intent, systemReferrer: String? = null): Activity {
     val activity = Robolectric.buildActivity(Activity::class.java, intent).create().get()
     ReflectionHelpers.setField(activity, "mReferrer", systemReferrer)
     return activity
+}
+
+/** Android 14+ 의 launchedFromUid·launchedFromPackage 를 정해 둘 수 있는 Activity. */
+class LaunchedActivity : Activity() {
+    var fromUid: Int = -1
+    var fromPackage: String? = null
+    override fun getLaunchedFromUid(): Int = fromUid
+    override fun getLaunchedFromPackage(): String? = fromPackage
+}
+
+internal fun launchFrom(intent: Intent, uid: Int, pkg: String?, systemReferrer: String? = null): LaunchedActivity {
+    val activity = Robolectric.buildActivity(LaunchedActivity::class.java, intent).create().get()
+    activity.fromUid = uid
+    activity.fromPackage = pkg
+    ReflectionHelpers.setField(activity, "mReferrer", systemReferrer)
+    return activity
+}
+
+/** 다른 앱의 uid 에 패키지를 등록한다(PackageManager.getPackagesForUid). */
+internal fun setUidPackages(uid: Int, vararg packages: String) {
+    shadowOf(ApplicationProvider.getApplicationContext<android.app.Application>().packageManager).setPackagesForUid(uid, *packages)
 }

@@ -39,11 +39,16 @@ kotlin {
 dependencies {
     // 공개 API 가 코어 타입(DeepLinkRequest·CallerIdentity)을 드러내므로 api 로 노출한다
     api(project(":deeplink-core"))
+    // DeepLinkQueue.consumeWhileResumed 가 LifecycleOwner 를 받는다. 내비게이션·Activity 라이브러리에는 의존하지 않는다
+    api(libs.androidx.lifecycle.common)
+    // 소비 코루틴(공개 API 에 코루틴 타입은 나오지 않는다)
+    implementation(libs.kotlinx.coroutines.core)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
-    testImplementation(libs.kotlinx.coroutines.core)
+    testImplementation(libs.androidx.lifecycle.runtime)
+    testImplementation(libs.androidx.activity)
 }
 
 mavenPublishing {

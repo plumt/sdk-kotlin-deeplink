@@ -11,18 +11,13 @@ public abstract interface class net/plumt/deeplink/android/CallerVerifier {
 	public static final field Companion Lnet/plumt/deeplink/android/CallerVerifier$Companion;
 	public static fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/CallerVerifier;
 	public static fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/CallerVerifier;
-	public abstract fun identify (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/CallerIdentity;
-	public static synthetic fun identify$default (Lnet/plumt/deeplink/android/CallerVerifier;Landroid/app/Activity;Landroid/content/Intent;ILjava/lang/Object;)Lnet/plumt/deeplink/CallerIdentity;
+	public abstract fun identify (Landroid/app/Activity;Landroid/content/Intent;Z)Lnet/plumt/deeplink/CallerIdentity;
 }
 
 public final class net/plumt/deeplink/android/CallerVerifier$Companion {
 	public final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/CallerVerifier;
 	public final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/CallerVerifier;
 	public static synthetic fun create$default (Lnet/plumt/deeplink/android/CallerVerifier$Companion;Landroid/content/Context;Ljava/util/Collection;ILjava/lang/Object;)Lnet/plumt/deeplink/android/CallerVerifier;
-}
-
-public final class net/plumt/deeplink/android/CallerVerifier$DefaultImpls {
-	public static synthetic fun identify$default (Lnet/plumt/deeplink/android/CallerVerifier;Landroid/app/Activity;Landroid/content/Intent;ILjava/lang/Object;)Lnet/plumt/deeplink/CallerIdentity;
 }
 
 public final class net/plumt/deeplink/android/DeepLinkIntentReader {
@@ -33,9 +28,8 @@ public final class net/plumt/deeplink/android/DeepLinkIntentReader {
 	public static final fun create (Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
 	public static final fun create (Lnet/plumt/deeplink/android/CallerVerifier;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
 	public static final fun create (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public final fun read (Landroid/app/Activity;)Lnet/plumt/deeplink/android/IntentReadResult;
-	public final fun read (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/android/IntentReadResult;
-	public static synthetic fun read$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader;Landroid/app/Activity;Landroid/content/Intent;ILjava/lang/Object;)Lnet/plumt/deeplink/android/IntentReadResult;
+	public final fun readLaunch (Landroid/app/Activity;Landroid/os/Bundle;)Lnet/plumt/deeplink/android/IntentReadResult;
+	public final fun readNewIntent (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/android/IntentReadResult;
 }
 
 public final class net/plumt/deeplink/android/DeepLinkIntentReader$Companion {
@@ -46,6 +40,23 @@ public final class net/plumt/deeplink/android/DeepLinkIntentReader$Companion {
 	public final fun create (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
 	public static synthetic fun create$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;ILjava/lang/Object;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
 	public static synthetic fun create$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;ILjava/lang/Object;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
+}
+
+public final class net/plumt/deeplink/android/DeepLinkQueue {
+	public static final field Companion Lnet/plumt/deeplink/android/DeepLinkQueue$Companion;
+	public static final field DEFAULT_CAPACITY I
+	public fun <init> ()V
+	public fun <init> (I)V
+	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun clear ()V
+	public final fun consumeWhileResumed (Landroidx/lifecycle/LifecycleOwner;Lkotlin/jvm/functions/Function2;)Ljava/io/Closeable;
+	public final fun getCapacity ()I
+	public final fun getSize ()I
+	public final fun offer (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkRequest;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/android/DeepLinkQueue$Companion {
 }
 
 public final class net/plumt/deeplink/android/ExtraInvalidReason : java/lang/Enum {
@@ -134,7 +145,12 @@ public final class net/plumt/deeplink/android/SafeExtras {
 
 public final class net/plumt/deeplink/android/TrustedCaller {
 	public fun <init> (Ljava/lang/String;Ljava/util/Set;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;I)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getPreviousSha256Digests ()Ljava/util/Set;
+	public final fun getRotationMinSdk ()I
 	public final fun getSha256Digests ()Ljava/util/Set;
 	public fun toString ()Ljava/lang/String;
 }

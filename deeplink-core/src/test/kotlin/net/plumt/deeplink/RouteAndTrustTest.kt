@@ -71,7 +71,7 @@ class RouteAndTrustTest {
     @Test fun `CallerIdentity 검증과 동등성`() {
         assertEquals(CallerIdentity(null, CallerVerification.NONE), CallerIdentity.UNKNOWN)
         assertEquals(CallerIdentity("a.b", CallerVerification.CLAIMED).hashCode(), CallerIdentity("a.b", CallerVerification.CLAIMED).hashCode())
-        assertNotEquals(CallerIdentity("a.b", CallerVerification.CLAIMED), CallerIdentity("a.b", CallerVerification.SYSTEM_REPORTED))
+        assertNotEquals(CallerIdentity("a.b", CallerVerification.CLAIMED), CallerIdentity("a.b", CallerVerification.OS_VERIFIED))
         assertNotEquals(CallerIdentity("a.b", CallerVerification.CLAIMED), CallerIdentity("a.c", CallerVerification.CLAIMED))
         assertFalse(CallerIdentity.UNKNOWN.equals("x"))
         assertEquals("CallerIdentity(packageName=a.b, verification=NONE)", CallerIdentity("a.b", CallerVerification.NONE).toString())
@@ -84,10 +84,13 @@ class RouteAndTrustTest {
         val expected = mapOf(
             CallerVerification.NONE to listOf(TrustLevel.PUBLIC, TrustLevel.PUBLIC),
             CallerVerification.CLAIMED to listOf(TrustLevel.PUBLIC, TrustLevel.PUBLIC),
-            CallerVerification.SYSTEM_REPORTED to listOf(TrustLevel.SELF, TrustLevel.PUBLIC),
-            CallerVerification.OS_VERIFIED to listOf(TrustLevel.SELF, TrustLevel.PUBLIC),
-            CallerVerification.SIGNATURE_VERIFIED to listOf(TrustLevel.SELF, TrustLevel.FIRST_PARTY),
+            // H2 — OS 가 보증한 자기 패키지도, 서명이 맞는 자기 패키지도 중계일 수 있어 PUBLIC
+            CallerVerification.OS_VERIFIED to listOf(TrustLevel.PUBLIC, TrustLevel.PUBLIC),
+            CallerVerification.SIGNATURE_VERIFIED to listOf(TrustLevel.PUBLIC, TrustLevel.FIRST_PARTY),
+            // 자기 앱이 발급한 토큰만 SELF. 다른 패키지 이름이 붙은 SELF_ISSUED 는 근거가 없다
+            CallerVerification.SELF_ISSUED to listOf(TrustLevel.SELF, TrustLevel.PUBLIC),
         )
+        assertEquals(CallerVerification.values().toSet(), expected.keys)
         for ((verification, levels) in expected) {
             assertEquals("self $verification", levels[0], policy.resolve(CallerIdentity("my.app", verification)))
             assertEquals("other $verification", levels[1], policy.resolve(CallerIdentity("other.app", verification)))
@@ -95,6 +98,7 @@ class RouteAndTrustTest {
         assertEquals(TrustLevel.PUBLIC, policy.resolve(CallerIdentity.UNKNOWN))
         val noSelf = TrustPolicy.standard(null)
         assertEquals(TrustLevel.PUBLIC, noSelf.resolve(CallerIdentity("my.app", CallerVerification.OS_VERIFIED)))
+        assertEquals(TrustLevel.PUBLIC, noSelf.resolve(CallerIdentity("my.app", CallerVerification.SELF_ISSUED)))
         assertEquals(TrustLevel.FIRST_PARTY, noSelf.resolve(CallerIdentity("my.app", CallerVerification.SIGNATURE_VERIFIED)))
         assertIae("selfPackage 는 null 이거나 비어 있지 않아야 한다: ''") { TrustPolicy.standard("") }
     }

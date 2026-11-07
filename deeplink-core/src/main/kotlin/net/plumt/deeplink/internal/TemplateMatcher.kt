@@ -39,10 +39,13 @@ internal class TemplateMatcher private constructor(
     companion object {
         private val NAME = Regex("[A-Za-z0-9_.-]{1,64}")
 
+        // 중괄호는 클래스 안팎 모두 이스케이프한다 — Android(ICU)는 짝 없는 `}` 를 문법 오류로 거부한다(JDK 는 리터럴로 받는다)
+        private val PLACEHOLDER = Regex("\\{([^\\{\\}/]*)\\}")
+
         fun compile(template: String): TemplateMatcher {
             // {..} 를 자리표시자로 바꾼 뒤 일반 URI 규칙으로 검증한다 — 템플릿과 실제 URI 가 같은 규칙을 따른다
             val names = ArrayList<String>()
-            val placeholderTemplate = Regex("\\{([^{}/]*)}").replace(template) { m ->
+            val placeholderTemplate = PLACEHOLDER.replace(template) { m ->
                 val name = m.groupValues[1]
                 require(NAME.matches(name)) { "템플릿 파라미터 이름이 틀렸다: '{$name}' in '$template'" }
                 require(name !in names) { "템플릿 파라미터 이름이 겹친다: '$name' in '$template'" }

@@ -14,9 +14,13 @@ package net.plumt.deeplink
  * @property maxQueryValueLength 디코딩한 쿼리 값 하나의 최대 길이
  * @property allowEncodedSlash `%2F`·`%5C` 처럼 디코딩하면 `/`·`\` 가 되는 경로 조각을 받을지.
  *   기본 거부 — 경로 파라미터 값이 다른 경로로 해석되는 것을 막는다
- * @property allowDoubleEncoding 한 번 디코딩한 경로 조각·쿼리 이름에 `%XX` 가 다시 남아 있어도 받을지.
+ * @property allowDoubleEncoding 한 번 디코딩한 경로 조각·쿼리 이름에 `%` 가 남아 있어도 받을지.
  *   기본 거부 — 뒤에서 한 번 더 디코딩하는 코드가 검증을 우회당하는 것을 막는다.
  *   쿼리 **값**은 파라미터 검증기가 판단한다([Param.string] 의 `allowPercentEscapes`)
+ * @property allowUnnormalized NFKC 정규형이 아닌 경로 조각·쿼리 이름(전각 `．．`·`／`, NFD 조합 문자)을 받을지.
+ *   기본 거부 — 값을 정규화하는 하류(파일 시스템·서버·IDNA)에서 `..`·`/` 로 바뀌는 것을 막는다.
+ *   라이브러리는 값을 정규화하지 않는다. 쿼리 **값**은 검사하지 않으므로 파일 경로·URL 조립에 쓸 값은
+ *   [Param.string] 의 `pattern` 으로 ASCII 를 강제한다
  */
 public class UriRules(
     public val maxUriLength: Int = 2048,
@@ -26,6 +30,7 @@ public class UriRules(
     public val maxQueryValueLength: Int = 1024,
     public val allowEncodedSlash: Boolean = false,
     public val allowDoubleEncoding: Boolean = false,
+    public val allowUnnormalized: Boolean = false,
 ) {
     init {
         requirePositive("maxUriLength", maxUriLength)
@@ -39,7 +44,7 @@ public class UriRules(
         "UriRules(maxUriLength=$maxUriLength, maxPathSegments=$maxPathSegments, " +
             "maxSegmentLength=$maxSegmentLength, maxQueryParameters=$maxQueryParameters, " +
             "maxQueryValueLength=$maxQueryValueLength, allowEncodedSlash=$allowEncodedSlash, " +
-            "allowDoubleEncoding=$allowDoubleEncoding)"
+            "allowDoubleEncoding=$allowDoubleEncoding, allowUnnormalized=$allowUnnormalized)"
 
     public companion object {
         /** 기본 규칙. */
