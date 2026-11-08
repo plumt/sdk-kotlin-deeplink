@@ -1,165 +1,811 @@
-public final class net/plumt/deeplink/android/AndroidDeepLinks {
-	public static final field INSTANCE Lnet/plumt/deeplink/android/AndroidDeepLinks;
-	public static final fun selfIntent (Landroid/content/Context;Ljava/lang/String;)Landroid/content/Intent;
-	public static final fun selfPendingIntent (Landroid/content/Context;Ljava/lang/String;I)Landroid/app/PendingIntent;
-	public static final fun selfPendingIntent (Landroid/content/Context;Ljava/lang/String;II)Landroid/app/PendingIntent;
-	public static synthetic fun selfPendingIntent$default (Landroid/content/Context;Ljava/lang/String;IIILjava/lang/Object;)Landroid/app/PendingIntent;
-	public static final fun trustPolicy (Landroid/content/Context;)Lnet/plumt/deeplink/TrustPolicy;
+public final class net/plumt/deeplink/AppLinkHostState {
+	public static final field Companion Lnet/plumt/deeplink/AppLinkHostState$Companion;
+	public static final field NONE Lnet/plumt/deeplink/AppLinkHostState;
+	public static final field SELECTED Lnet/plumt/deeplink/AppLinkHostState;
+	public static final field VERIFIED Lnet/plumt/deeplink/AppLinkHostState;
+	public final fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class net/plumt/deeplink/android/CallerVerifier {
-	public static final field Companion Lnet/plumt/deeplink/android/CallerVerifier$Companion;
-	public static fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/CallerVerifier;
-	public static fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/CallerVerifier;
+public final class net/plumt/deeplink/AppLinkHostState$Companion {
+}
+
+public abstract interface class net/plumt/deeplink/AppLinkStatus {
+}
+
+public final class net/plumt/deeplink/AppLinkStatus$Available : net/plumt/deeplink/AppLinkStatus {
+	public fun <init> (ZLjava/util/Map;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHosts ()Ljava/util/Map;
+	public final fun getLinkHandlingAllowed ()Z
+	public fun hashCode ()I
+	public final fun isVerified (Ljava/lang/String;)Z
+	public final fun opensInApp (Ljava/lang/String;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/AppLinkStatus$Unavailable : net/plumt/deeplink/AppLinkStatus {
+	public static final field INSTANCE Lnet/plumt/deeplink/AppLinkStatus$Unavailable;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/AppLinkStatus$Unsupported : net/plumt/deeplink/AppLinkStatus {
+	public static final field INSTANCE Lnet/plumt/deeplink/AppLinkStatus$Unsupported;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/CallerIdentity {
+	public static final field Companion Lnet/plumt/deeplink/CallerIdentity$Companion;
+	public static final field UNKNOWN Lnet/plumt/deeplink/CallerIdentity;
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/CallerVerification;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPackageName ()Ljava/lang/String;
+	public final fun getVerification ()Lnet/plumt/deeplink/CallerVerification;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/CallerIdentity$Companion {
+}
+
+public final class net/plumt/deeplink/CallerVerification {
+	public static final field CLAIMED Lnet/plumt/deeplink/CallerVerification;
+	public static final field Companion Lnet/plumt/deeplink/CallerVerification$Companion;
+	public static final field NONE Lnet/plumt/deeplink/CallerVerification;
+	public static final field OS_VERIFIED Lnet/plumt/deeplink/CallerVerification;
+	public static final field SELF_ISSUED Lnet/plumt/deeplink/CallerVerification;
+	public static final field SIGNATURE_VERIFIED Lnet/plumt/deeplink/CallerVerification;
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/CallerVerification$Companion {
+}
+
+public abstract interface class net/plumt/deeplink/CallerVerifier {
+	public static final field Companion Lnet/plumt/deeplink/CallerVerifier$Companion;
+	public static fun create (Landroid/content/Context;)Lnet/plumt/deeplink/CallerVerifier;
+	public static fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/CallerVerifier;
 	public abstract fun identify (Landroid/app/Activity;Landroid/content/Intent;Z)Lnet/plumt/deeplink/CallerIdentity;
 }
 
-public final class net/plumt/deeplink/android/CallerVerifier$Companion {
-	public final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/CallerVerifier;
-	public final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/CallerVerifier;
-	public static synthetic fun create$default (Lnet/plumt/deeplink/android/CallerVerifier$Companion;Landroid/content/Context;Ljava/util/Collection;ILjava/lang/Object;)Lnet/plumt/deeplink/android/CallerVerifier;
+public final class net/plumt/deeplink/CallerVerifier$Companion {
+	public final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/CallerVerifier;
+	public final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/CallerVerifier;
 }
 
-public final class net/plumt/deeplink/android/DeepLinkIntentReader {
-	public static final field Companion Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;
-	public synthetic fun <init> (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public static final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public static final fun create (Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public static final fun create (Lnet/plumt/deeplink/android/CallerVerifier;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public static final fun create (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public final fun readLaunch (Landroid/app/Activity;Landroid/os/Bundle;)Lnet/plumt/deeplink/android/IntentReadResult;
-	public final fun readNewIntent (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/android/IntentReadResult;
+public abstract interface class net/plumt/deeplink/DeepLinkChain {
+	public abstract fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public abstract fun proceed (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class net/plumt/deeplink/android/DeepLinkIntentReader$Companion {
-	public final fun create (Landroid/content/Context;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public final fun create (Landroid/content/Context;Ljava/util/Collection;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public final fun create (Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public final fun create (Lnet/plumt/deeplink/android/CallerVerifier;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public final fun create (Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public static synthetic fun create$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;Landroid/content/Context;Ljava/util/Collection;Ljava/util/Set;ILjava/lang/Object;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-	public static synthetic fun create$default (Lnet/plumt/deeplink/android/DeepLinkIntentReader$Companion;Lnet/plumt/deeplink/android/CallerVerifier;Ljava/util/Set;ILjava/lang/Object;)Lnet/plumt/deeplink/android/DeepLinkIntentReader;
-}
-
-public final class net/plumt/deeplink/android/DeepLinkQueue {
-	public static final field Companion Lnet/plumt/deeplink/android/DeepLinkQueue$Companion;
-	public static final field DEFAULT_CAPACITY I
-	public fun <init> ()V
-	public fun <init> (I)V
-	public synthetic fun <init> (IILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun clear ()V
-	public final fun consumeWhileResumed (Landroidx/lifecycle/LifecycleOwner;Lkotlin/jvm/functions/Function2;)Ljava/io/Closeable;
-	public final fun getCapacity ()I
-	public final fun getSize ()I
-	public final fun offer (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkRequest;
+public final class net/plumt/deeplink/DeepLinkConfig {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinkConfig$Companion;
+	public static final field DEFAULT_QUEUE_CAPACITY I
+	public synthetic fun <init> (Lnet/plumt/deeplink/DeepLinkConfig$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun getAllowedActions ()Ljava/util/Set;
+	public final fun getCallerVerifier ()Lnet/plumt/deeplink/CallerVerifier;
+	public final fun getExternalHosts ()Ljava/util/Set;
+	public final fun getInterceptors ()Ljava/util/List;
+	public final fun getListeners ()Ljava/util/List;
+	public final fun getQueueCapacity ()I
+	public final fun getRoutes ()Ljava/util/List;
+	public final fun getRules ()Ljava/util/List;
+	public final fun getTrustPolicy ()Lnet/plumt/deeplink/TrustPolicy;
+	public final fun getTrustedCallers ()Ljava/util/List;
+	public final fun getUriRules ()Lnet/plumt/deeplink/UriRules;
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/DeepLinkQueue$Companion {
+public final class net/plumt/deeplink/DeepLinkConfig$Builder {
+	public final fun allowedActions (Ljava/util/Set;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun build ()Lnet/plumt/deeplink/DeepLinkConfig;
+	public final fun callerVerifier (Lnet/plumt/deeplink/CallerVerifier;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun externalHost (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun externalHosts (Ljava/lang/Iterable;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun interceptor (Lnet/plumt/deeplink/DeepLinkInterceptor;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun listener (Lnet/plumt/deeplink/DeepLinkListener;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun queueCapacity (I)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun route (Lnet/plumt/deeplink/DeepLinkRoute;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun routes (Ljava/lang/Iterable;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun rule (Lnet/plumt/deeplink/DeepLinkRule;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun trustPolicy (Lnet/plumt/deeplink/TrustPolicy;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun trustedCaller (Lnet/plumt/deeplink/TrustedCaller;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun trustedCallers (Ljava/lang/Iterable;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
+	public final fun uriRules (Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkConfig$Builder;
 }
 
-public final class net/plumt/deeplink/android/ExtraInvalidReason : java/lang/Enum {
-	public static final field TOO_LONG Lnet/plumt/deeplink/android/ExtraInvalidReason;
-	public static final field UNREADABLE Lnet/plumt/deeplink/android/ExtraInvalidReason;
-	public static final field WRONG_TYPE Lnet/plumt/deeplink/android/ExtraInvalidReason;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraInvalidReason;
-	public static fun values ()[Lnet/plumt/deeplink/android/ExtraInvalidReason;
+public final class net/plumt/deeplink/DeepLinkConfig$Companion {
+	public final fun builder ()Lnet/plumt/deeplink/DeepLinkConfig$Builder;
 }
 
-public abstract class net/plumt/deeplink/android/ExtraRead {
+public final class net/plumt/deeplink/DeepLinkConfigKt {
+	public static final fun deepLinkConfig (Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkConfig;
 }
 
-public final class net/plumt/deeplink/android/ExtraRead$Absent : net/plumt/deeplink/android/ExtraRead {
-	public static final field INSTANCE Lnet/plumt/deeplink/android/ExtraRead$Absent;
+public final class net/plumt/deeplink/DeepLinkException : java/lang/RuntimeException {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkHandle {
+	public abstract fun cancel ()V
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkInterceptor {
+	public fun getPriority ()I
+	public abstract fun intercept (Lnet/plumt/deeplink/DeepLinkChain;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkListener {
+	public abstract fun onOutcome (Lnet/plumt/deeplink/DeepLinkOutcome;)V
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkOutcome {
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Deferred : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public final fun getReason ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/ExtraRead$Invalid : net/plumt/deeplink/android/ExtraRead {
-	public fun <init> (Lnet/plumt/deeplink/android/ExtraInvalidReason;)V
-	public final fun component1 ()Lnet/plumt/deeplink/android/ExtraInvalidReason;
-	public final fun copy (Lnet/plumt/deeplink/android/ExtraInvalidReason;)Lnet/plumt/deeplink/android/ExtraRead$Invalid;
-	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/ExtraRead$Invalid;Lnet/plumt/deeplink/android/ExtraInvalidReason;ILjava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead$Invalid;
+public final class net/plumt/deeplink/DeepLinkOutcome$Failed : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkException;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getReason ()Lnet/plumt/deeplink/android/ExtraInvalidReason;
+	public final fun getCause ()Lnet/plumt/deeplink/DeepLinkException;
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/ExtraRead$Present : net/plumt/deeplink/android/ExtraRead {
+public final class net/plumt/deeplink/DeepLinkOutcome$Handled : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Rejected : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/Rejection;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRejection ()Lnet/plumt/deeplink/Rejection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkOutcome$Unhandled : net/plumt/deeplink/DeepLinkOutcome {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkRequest {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/CallerIdentity;)V
+	public final fun getCaller ()Lnet/plumt/deeplink/CallerIdentity;
+	public final fun getUri ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkResolution {
+}
+
+public final class net/plumt/deeplink/DeepLinkResolution$Rejected : net/plumt/deeplink/DeepLinkResolution {
+	public fun <init> (Lnet/plumt/deeplink/Rejection;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRejection ()Lnet/plumt/deeplink/Rejection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkResolution$Resolved : net/plumt/deeplink/DeepLinkResolution {
+	public fun <init> (Lnet/plumt/deeplink/ResolvedDeepLink;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLink ()Lnet/plumt/deeplink/ResolvedDeepLink;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkRoute {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinkRoute$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/RouteMatcher;Ljava/util/Map;Ljava/util/Map;Lnet/plumt/deeplink/TrustLevel;Lnet/plumt/deeplink/UnknownQueryPolicy;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public static final fun builder (Ljava/lang/String;Lnet/plumt/deeplink/RouteMatcher;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getMatcher ()Lnet/plumt/deeplink/RouteMatcher;
+	public final fun getPathParams ()Ljava/util/Map;
+	public final fun getQueryParams ()Ljava/util/Map;
+	public final fun getRequiredTrust ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun getUnknownQueryPolicy ()Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkRoute$Builder {
+	public final fun build ()Lnet/plumt/deeplink/DeepLinkRoute;
+	public final fun pathParam (Lnet/plumt/deeplink/Param;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun queryParam (Lnet/plumt/deeplink/Param;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun queryParam (Lnet/plumt/deeplink/Param;Z)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun requiredTrust (Lnet/plumt/deeplink/TrustLevel;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun unknownQueryParameters (Lnet/plumt/deeplink/UnknownQueryPolicy;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+}
+
+public final class net/plumt/deeplink/DeepLinkRoute$Companion {
+	public final fun builder (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+	public final fun builder (Ljava/lang/String;Lnet/plumt/deeplink/RouteMatcher;)Lnet/plumt/deeplink/DeepLinkRoute$Builder;
+}
+
+public final class net/plumt/deeplink/DeepLinkRouteKt {
+	public static final fun deepLinkRoute (Ljava/lang/String;Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkRoute;
+	public static final fun deepLinkRoute (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkRoute;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkRouter {
+	public abstract fun route (Lnet/plumt/deeplink/ResolvedDeepLink;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinkRule {
+	public abstract fun check (Lnet/plumt/deeplink/ResolvedDeepLink;)Lnet/plumt/deeplink/Rejection;
+}
+
+public final class net/plumt/deeplink/DeepLinkUri {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinkUri$Companion;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPathSegments ()Ljava/util/List;
+	public final fun getPort ()Ljava/lang/Integer;
+	public final fun getQueryParameters ()Ljava/util/Map;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static final fun parse (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static final fun parse (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static final fun parseOrNull (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public static final fun parseOrNull (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun queryParameter (Ljava/lang/String;)Ljava/lang/String;
+	public final fun redacted ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public final fun toUriString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/DeepLinkUri$Companion {
+	public final fun parse (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun parse (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun parseOrNull (Ljava/lang/String;)Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun parseOrNull (Ljava/lang/String;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/DeepLinkUri;
+}
+
+public abstract interface class net/plumt/deeplink/DeepLinks {
+	public static final field Companion Lnet/plumt/deeplink/DeepLinks$Companion;
+	public abstract fun appLinkSettingsIntent ()Landroid/content/Intent;
+	public abstract fun appLinkStatus ()Lnet/plumt/deeplink/AppLinkStatus;
+	public fun booleanExtra (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/ExtraRead;
+	public abstract fun clearPending ()V
+	public fun consumeWhileResumed (Landroidx/lifecycle/LifecycleOwner;Lnet/plumt/deeplink/DeepLinkRouter;)Ljava/io/Closeable;
+	public abstract fun consumeWhileResumed (Landroidx/lifecycle/LifecycleOwner;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/jvm/functions/Function1;)Ljava/io/Closeable;
+	public static fun create (Landroid/content/Context;Lnet/plumt/deeplink/DeepLinkConfig;)Lnet/plumt/deeplink/DeepLinks;
+	public abstract fun externalIntent (Ljava/lang/String;)Lnet/plumt/deeplink/ExternalLinkResult;
+	public abstract fun getConfig ()Lnet/plumt/deeplink/DeepLinkConfig;
+	public abstract fun getPendingCount ()I
+	public abstract fun handle (Lnet/plumt/deeplink/DeepLinkRequest;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handle (Lnet/plumt/deeplink/DeepLinkRequest;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkHandle;
+	public fun intExtra (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/ExtraRead;
+	public fun longExtra (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/ExtraRead;
+	public abstract fun offer (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkRequest;
+	public fun offerLaunch (Landroid/app/Activity;Landroid/os/Bundle;)Lnet/plumt/deeplink/IntentReadResult;
+	public fun offerNewIntent (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/IntentReadResult;
+	public abstract fun openExternal (Landroid/content/Context;Ljava/lang/String;)Lnet/plumt/deeplink/ExternalOpenResult;
+	public abstract fun readLaunch (Landroid/app/Activity;Landroid/os/Bundle;)Lnet/plumt/deeplink/IntentReadResult;
+	public abstract fun readNewIntent (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/IntentReadResult;
+	public abstract fun resolve (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkResolution;
+	public abstract fun resume (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun resume (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkHandle;
+	public abstract fun selfIntent (Ljava/lang/String;)Landroid/content/Intent;
+	public abstract fun selfPendingIntent (Ljava/lang/String;I)Landroid/app/PendingIntent;
+	public abstract fun selfPendingIntent (Ljava/lang/String;II)Landroid/app/PendingIntent;
+	public fun stringExtra (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/ExtraRead;
+	public fun stringExtra (Landroid/content/Intent;Ljava/lang/String;I)Lnet/plumt/deeplink/ExtraRead;
+}
+
+public final class net/plumt/deeplink/DeepLinks$Companion {
+	public final fun create (Landroid/content/Context;Lnet/plumt/deeplink/DeepLinkConfig;)Lnet/plumt/deeplink/DeepLinks;
+}
+
+public abstract interface class net/plumt/deeplink/ExternalLinkResult {
+}
+
+public final class net/plumt/deeplink/ExternalLinkResult$Ready : net/plumt/deeplink/ExternalLinkResult {
+	public fun <init> (Landroid/content/Intent;)V
+	public final fun getIntent ()Landroid/content/Intent;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExternalLinkResult$Rejected : net/plumt/deeplink/ExternalLinkResult {
+	public fun <init> (Lnet/plumt/deeplink/Rejection;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRejection ()Lnet/plumt/deeplink/Rejection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/ExternalOpenResult {
+}
+
+public final class net/plumt/deeplink/ExternalOpenResult$NoActivity : net/plumt/deeplink/ExternalOpenResult {
+	public static final field INSTANCE Lnet/plumt/deeplink/ExternalOpenResult$NoActivity;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExternalOpenResult$Opened : net/plumt/deeplink/ExternalOpenResult {
+	public static final field INSTANCE Lnet/plumt/deeplink/ExternalOpenResult$Opened;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExternalOpenResult$Rejected : net/plumt/deeplink/ExternalOpenResult {
+	public fun <init> (Lnet/plumt/deeplink/Rejection;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getRejection ()Lnet/plumt/deeplink/Rejection;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExtraInvalidReason {
+	public static final field Companion Lnet/plumt/deeplink/ExtraInvalidReason$Companion;
+	public static final field TOO_LONG Lnet/plumt/deeplink/ExtraInvalidReason;
+	public static final field UNREADABLE Lnet/plumt/deeplink/ExtraInvalidReason;
+	public static final field WRONG_TYPE Lnet/plumt/deeplink/ExtraInvalidReason;
+	public final fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExtraInvalidReason$Companion {
+}
+
+public abstract interface class net/plumt/deeplink/ExtraRead {
+}
+
+public final class net/plumt/deeplink/ExtraRead$Absent : net/plumt/deeplink/ExtraRead {
+	public static final field INSTANCE Lnet/plumt/deeplink/ExtraRead$Absent;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExtraRead$Invalid : net/plumt/deeplink/ExtraRead {
+	public fun <init> (Lnet/plumt/deeplink/ExtraInvalidReason;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Lnet/plumt/deeplink/ExtraInvalidReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ExtraRead$Present : net/plumt/deeplink/ExtraRead {
 	public fun <init> (Ljava/lang/Object;)V
-	public final fun component1 ()Ljava/lang/Object;
-	public final fun copy (Ljava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead$Present;
-	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/ExtraRead$Present;Ljava/lang/Object;ILjava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead$Present;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class net/plumt/deeplink/android/IntentReadResult {
+public final class net/plumt/deeplink/FakeDeepLinks : net/plumt/deeplink/DeepLinks {
+	public static final field Companion Lnet/plumt/deeplink/FakeDeepLinks$Companion;
+	public static final field DEFAULT_SELF_PACKAGE Ljava/lang/String;
+	public fun <init> (Lnet/plumt/deeplink/DeepLinkConfig;)V
+	public fun <init> (Lnet/plumt/deeplink/DeepLinkConfig;Ljava/lang/String;)V
+	public fun appLinkSettingsIntent ()Landroid/content/Intent;
+	public fun appLinkStatus ()Lnet/plumt/deeplink/AppLinkStatus;
+	public fun clearPending ()V
+	public fun consumeWhileResumed (Landroidx/lifecycle/LifecycleOwner;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/jvm/functions/Function1;)Ljava/io/Closeable;
+	public fun externalIntent (Ljava/lang/String;)Lnet/plumt/deeplink/ExternalLinkResult;
+	public final fun getAppLinkStatusResult ()Lnet/plumt/deeplink/AppLinkStatus;
+	public fun getConfig ()Lnet/plumt/deeplink/DeepLinkConfig;
+	public final fun getExternalActivityAvailable ()Z
+	public final fun getIssuedSelfLinks ()Ljava/util/List;
+	public final fun getLaunchResult ()Lnet/plumt/deeplink/IntentReadResult;
+	public final fun getNewIntentResult ()Lnet/plumt/deeplink/IntentReadResult;
+	public final fun getOpenedExternal ()Ljava/util/List;
+	public final fun getOutcomes ()Ljava/util/List;
+	public fun getPendingCount ()I
+	public final fun getPendingIntentContext ()Landroid/content/Context;
+	public final fun getSelfPackage ()Ljava/lang/String;
+	public fun handle (Lnet/plumt/deeplink/DeepLinkRequest;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handle (Lnet/plumt/deeplink/DeepLinkRequest;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkHandle;
+	public fun offer (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkRequest;
+	public fun openExternal (Landroid/content/Context;Ljava/lang/String;)Lnet/plumt/deeplink/ExternalOpenResult;
+	public fun readLaunch (Landroid/app/Activity;Landroid/os/Bundle;)Lnet/plumt/deeplink/IntentReadResult;
+	public fun readNewIntent (Landroid/app/Activity;Landroid/content/Intent;)Lnet/plumt/deeplink/IntentReadResult;
+	public final fun reset ()V
+	public fun resolve (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/DeepLinkResolution;
+	public fun resume (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun resume (Lnet/plumt/deeplink/ResolvedDeepLink;Lnet/plumt/deeplink/DeepLinkRouter;Lkotlin/jvm/functions/Function1;)Lnet/plumt/deeplink/DeepLinkHandle;
+	public fun selfIntent (Ljava/lang/String;)Landroid/content/Intent;
+	public fun selfPendingIntent (Ljava/lang/String;I)Landroid/app/PendingIntent;
+	public fun selfPendingIntent (Ljava/lang/String;II)Landroid/app/PendingIntent;
+	public final fun setAppLinkStatusResult (Lnet/plumt/deeplink/AppLinkStatus;)V
+	public final fun setExternalActivityAvailable (Z)V
+	public final fun setLaunchResult (Lnet/plumt/deeplink/IntentReadResult;)V
+	public final fun setNewIntentResult (Lnet/plumt/deeplink/IntentReadResult;)V
+	public final fun setPendingIntentContext (Landroid/content/Context;)V
+	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/IntentReadResult$Link : net/plumt/deeplink/android/IntentReadResult {
+public final class net/plumt/deeplink/FakeDeepLinks$Companion {
+}
+
+public abstract interface class net/plumt/deeplink/IntentReadResult {
+}
+
+public final class net/plumt/deeplink/IntentReadResult$Link : net/plumt/deeplink/IntentReadResult {
 	public fun <init> (Lnet/plumt/deeplink/DeepLinkRequest;)V
-	public final fun component1 ()Lnet/plumt/deeplink/DeepLinkRequest;
-	public final fun copy (Lnet/plumt/deeplink/DeepLinkRequest;)Lnet/plumt/deeplink/android/IntentReadResult$Link;
-	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/IntentReadResult$Link;Lnet/plumt/deeplink/DeepLinkRequest;ILjava/lang/Object;)Lnet/plumt/deeplink/android/IntentReadResult$Link;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getRequest ()Lnet/plumt/deeplink/DeepLinkRequest;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/IntentReadResult$NotDeepLink : net/plumt/deeplink/android/IntentReadResult {
-	public static final field INSTANCE Lnet/plumt/deeplink/android/IntentReadResult$NotDeepLink;
+public final class net/plumt/deeplink/IntentReadResult$NotDeepLink : net/plumt/deeplink/IntentReadResult {
+	public static final field INSTANCE Lnet/plumt/deeplink/IntentReadResult$NotDeepLink;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/IntentReadResult$Unsafe : net/plumt/deeplink/IntentReadResult {
+	public fun <init> (Lnet/plumt/deeplink/UnsafeIntentReason;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Lnet/plumt/deeplink/UnsafeIntentReason;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/IntentReadResult$Unsafe : net/plumt/deeplink/android/IntentReadResult {
-	public fun <init> (Lnet/plumt/deeplink/android/UnsafeIntentReason;)V
-	public final fun component1 ()Lnet/plumt/deeplink/android/UnsafeIntentReason;
-	public final fun copy (Lnet/plumt/deeplink/android/UnsafeIntentReason;)Lnet/plumt/deeplink/android/IntentReadResult$Unsafe;
-	public static synthetic fun copy$default (Lnet/plumt/deeplink/android/IntentReadResult$Unsafe;Lnet/plumt/deeplink/android/UnsafeIntentReason;ILjava/lang/Object;)Lnet/plumt/deeplink/android/IntentReadResult$Unsafe;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getReason ()Lnet/plumt/deeplink/android/UnsafeIntentReason;
-	public fun hashCode ()I
+public final class net/plumt/deeplink/LimitKind {
+	public static final field Companion Lnet/plumt/deeplink/LimitKind$Companion;
+	public static final field PATH_SEGMENTS Lnet/plumt/deeplink/LimitKind;
+	public static final field QUERY_PARAMETERS Lnet/plumt/deeplink/LimitKind;
+	public static final field QUERY_VALUE_LENGTH Lnet/plumt/deeplink/LimitKind;
+	public static final field SEGMENT_LENGTH Lnet/plumt/deeplink/LimitKind;
+	public static final field URI_LENGTH Lnet/plumt/deeplink/LimitKind;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getName ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/SafeExtras {
+public final class net/plumt/deeplink/LimitKind$Companion {
+}
+
+public final class net/plumt/deeplink/MalformedReason {
+	public static final field Companion Lnet/plumt/deeplink/MalformedReason$Companion;
+	public static final field DOT_SEGMENT Lnet/plumt/deeplink/MalformedReason;
+	public static final field DOUBLE_ENCODING Lnet/plumt/deeplink/MalformedReason;
+	public static final field EMPTY Lnet/plumt/deeplink/MalformedReason;
+	public static final field EMPTY_SEGMENT Lnet/plumt/deeplink/MalformedReason;
+	public static final field ENCODED_SLASH Lnet/plumt/deeplink/MalformedReason;
+	public static final field ILLEGAL_CHARACTER Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_HOST Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_PERCENT_ENCODING Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_PORT Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_QUERY Lnet/plumt/deeplink/MalformedReason;
+	public static final field INVALID_SCHEME Lnet/plumt/deeplink/MalformedReason;
+	public static final field MISSING_AUTHORITY Lnet/plumt/deeplink/MalformedReason;
+	public static final field NOT_NORMALIZED Lnet/plumt/deeplink/MalformedReason;
+	public static final field USERINFO_NOT_ALLOWED Lnet/plumt/deeplink/MalformedReason;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/MalformedReason$Companion {
+}
+
+public final class net/plumt/deeplink/Param {
+	public static final field Companion Lnet/plumt/deeplink/Param$Companion;
 	public static final field DEFAULT_MAX_LENGTH I
-	public static final field INSTANCE Lnet/plumt/deeplink/android/SafeExtras;
-	public static final fun boolean (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
-	public static final fun int (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
-	public static final fun long (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
-	public static final fun string (Landroid/content/Intent;Ljava/lang/String;)Lnet/plumt/deeplink/android/ExtraRead;
-	public static final fun string (Landroid/content/Intent;Ljava/lang/String;I)Lnet/plumt/deeplink/android/ExtraRead;
-	public static synthetic fun string$default (Landroid/content/Intent;Ljava/lang/String;IILjava/lang/Object;)Lnet/plumt/deeplink/android/ExtraRead;
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/ParamValidator;)V
+	public static final fun boolean (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getValidator ()Lnet/plumt/deeplink/ParamValidator;
+	public static final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public static final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/Param;
+	public static final fun int (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public static final fun int (Ljava/lang/String;Lkotlin/ranges/IntRange;)Lnet/plumt/deeplink/Param;
+	public static final fun long (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public static final fun long (Ljava/lang/String;Lkotlin/ranges/LongRange;)Lnet/plumt/deeplink/Param;
+	public static final fun oneOf (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;I)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;ILkotlin/text/Regex;)Lnet/plumt/deeplink/Param;
+	public static final fun string (Ljava/lang/String;ILkotlin/text/Regex;Z)Lnet/plumt/deeplink/Param;
+	public fun toString ()Ljava/lang/String;
+	public static final fun uuid (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
 }
 
-public final class net/plumt/deeplink/android/TrustedCaller {
+public final class net/plumt/deeplink/Param$Companion {
+	public final fun boolean (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public final fun httpsUrl (Ljava/lang/String;Ljava/util/Set;Lnet/plumt/deeplink/UriRules;)Lnet/plumt/deeplink/Param;
+	public final fun int (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun int (Ljava/lang/String;Lkotlin/ranges/IntRange;)Lnet/plumt/deeplink/Param;
+	public final fun long (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun long (Ljava/lang/String;Lkotlin/ranges/LongRange;)Lnet/plumt/deeplink/Param;
+	public final fun oneOf (Ljava/lang/String;Ljava/util/Set;)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;I)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;ILkotlin/text/Regex;)Lnet/plumt/deeplink/Param;
+	public final fun string (Ljava/lang/String;ILkotlin/text/Regex;Z)Lnet/plumt/deeplink/Param;
+	public final fun uuid (Ljava/lang/String;)Lnet/plumt/deeplink/Param;
+}
+
+public abstract interface class net/plumt/deeplink/ParamCheck {
+}
+
+public final class net/plumt/deeplink/ParamCheck$Invalid : net/plumt/deeplink/ParamCheck {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ParamCheck$Valid : net/plumt/deeplink/ParamCheck {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/ParamValidator {
+	public abstract fun validate (Ljava/lang/String;)Lnet/plumt/deeplink/ParamCheck;
+}
+
+public final class net/plumt/deeplink/QueryParamSpec {
+	public final fun getParam ()Lnet/plumt/deeplink/Param;
+	public final fun getRequired ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/Rejection {
+	public abstract fun getCode ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$Custom : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getCustomCode ()Ljava/lang/String;
+	public final fun getDetail ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$DuplicateParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$InsufficientTrust : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Lnet/plumt/deeplink/TrustLevel;Lnet/plumt/deeplink/TrustLevel;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()Lnet/plumt/deeplink/TrustLevel;
+	public fun getCode ()Ljava/lang/String;
+	public final fun getRequired ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$Intercepted : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$InvalidParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getReason ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$Malformed : net/plumt/deeplink/Rejection {
+	public fun <init> (Lnet/plumt/deeplink/MalformedReason;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getReason ()Lnet/plumt/deeplink/MalformedReason;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$MissingParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$NoMatchingRoute : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$TooLong : net/plumt/deeplink/Rejection {
+	public fun <init> (Lnet/plumt/deeplink/LimitKind;II)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActual ()I
+	public fun getCode ()Ljava/lang/String;
+	public final fun getLimit ()Lnet/plumt/deeplink/LimitKind;
+	public final fun getMax ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$UnexpectedParameter : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRouteId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$UnknownHost : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getHost ()Ljava/lang/String;
+	public final fun getPort ()Ljava/lang/Integer;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/Rejection$UnknownScheme : net/plumt/deeplink/Rejection {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getScheme ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/ResolvedDeepLink {
+	public final fun get (Lnet/plumt/deeplink/Param;)Ljava/lang/Object;
+	public final fun getCaller ()Lnet/plumt/deeplink/CallerIdentity;
+	public final fun getOrNull (Lnet/plumt/deeplink/Param;)Ljava/lang/Object;
+	public final fun getRoute ()Lnet/plumt/deeplink/DeepLinkRoute;
+	public final fun getTrust ()Lnet/plumt/deeplink/TrustLevel;
+	public final fun getUri ()Lnet/plumt/deeplink/DeepLinkUri;
+	public final fun pathValue (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class net/plumt/deeplink/RouteMatcher {
+	public static final field Companion Lnet/plumt/deeplink/RouteMatcher$Companion;
+	public abstract fun getHost ()Ljava/lang/String;
+	public abstract fun getPattern ()Ljava/lang/String;
+	public abstract fun getScheme ()Ljava/lang/String;
+	public fun getSpecificity ()I
+	public abstract fun match (Lnet/plumt/deeplink/DeepLinkUri;)Ljava/util/Map;
+	public static fun template (Ljava/lang/String;)Lnet/plumt/deeplink/RouteMatcher;
+}
+
+public final class net/plumt/deeplink/RouteMatcher$Companion {
+	public final fun template (Ljava/lang/String;)Lnet/plumt/deeplink/RouteMatcher;
+}
+
+public final class net/plumt/deeplink/TrustLevel {
+	public static final field Companion Lnet/plumt/deeplink/TrustLevel$Companion;
+	public static final field FIRST_PARTY Lnet/plumt/deeplink/TrustLevel;
+	public static final field PUBLIC Lnet/plumt/deeplink/TrustLevel;
+	public static final field SELF Lnet/plumt/deeplink/TrustLevel;
+	public final fun getName ()Ljava/lang/String;
+	public final fun satisfies (Lnet/plumt/deeplink/TrustLevel;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/TrustLevel$Companion {
+}
+
+public abstract interface class net/plumt/deeplink/TrustPolicy {
+	public static final field Companion Lnet/plumt/deeplink/TrustPolicy$Companion;
+	public abstract fun resolve (Lnet/plumt/deeplink/CallerIdentity;)Lnet/plumt/deeplink/TrustLevel;
+	public static fun standard (Ljava/lang/String;)Lnet/plumt/deeplink/TrustPolicy;
+}
+
+public final class net/plumt/deeplink/TrustPolicy$Companion {
+	public final fun standard (Ljava/lang/String;)Lnet/plumt/deeplink/TrustPolicy;
+}
+
+public final class net/plumt/deeplink/TrustedCaller {
 	public fun <init> (Ljava/lang/String;Ljava/util/Set;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;)V
 	public fun <init> (Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;I)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/util/Set;Ljava/util/Set;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getPackageName ()Ljava/lang/String;
 	public final fun getPreviousSha256Digests ()Ljava/util/Set;
 	public final fun getRotationMinSdk ()I
 	public final fun getSha256Digests ()Ljava/util/Set;
+	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class net/plumt/deeplink/android/UnsafeIntentReason : java/lang/Enum {
-	public static final field HAS_SELECTOR Lnet/plumt/deeplink/android/UnsafeIntentReason;
-	public static final field UNREADABLE_EXTRAS Lnet/plumt/deeplink/android/UnsafeIntentReason;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lnet/plumt/deeplink/android/UnsafeIntentReason;
-	public static fun values ()[Lnet/plumt/deeplink/android/UnsafeIntentReason;
+public final class net/plumt/deeplink/UnknownQueryPolicy {
+	public static final field Companion Lnet/plumt/deeplink/UnknownQueryPolicy$Companion;
+	public static final field DROP Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public static final field REJECT Lnet/plumt/deeplink/UnknownQueryPolicy;
+	public final fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/UnknownQueryPolicy$Companion {
+}
+
+public final class net/plumt/deeplink/UnsafeIntentReason {
+	public static final field Companion Lnet/plumt/deeplink/UnsafeIntentReason$Companion;
+	public static final field HAS_SELECTOR Lnet/plumt/deeplink/UnsafeIntentReason;
+	public static final field UNREADABLE_EXTRAS Lnet/plumt/deeplink/UnsafeIntentReason;
+	public final fun getName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/UnsafeIntentReason$Companion {
+}
+
+public final class net/plumt/deeplink/UriRules {
+	public static final field Companion Lnet/plumt/deeplink/UriRules$Companion;
+	public static final field DEFAULT Lnet/plumt/deeplink/UriRules;
+	public synthetic fun <init> (Lnet/plumt/deeplink/UriRules$Builder;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static final fun builder ()Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun getAllowDoubleEncoding ()Z
+	public final fun getAllowEncodedSlash ()Z
+	public final fun getAllowUnnormalized ()Z
+	public final fun getMaxPathSegments ()I
+	public final fun getMaxQueryParameters ()I
+	public final fun getMaxQueryValueLength ()I
+	public final fun getMaxSegmentLength ()I
+	public final fun getMaxUriLength ()I
+	public final fun toBuilder ()Lnet/plumt/deeplink/UriRules$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class net/plumt/deeplink/UriRules$Builder {
+	public final fun allowDoubleEncoding (Z)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun allowEncodedSlash (Z)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun allowUnnormalized (Z)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun build ()Lnet/plumt/deeplink/UriRules;
+	public final fun maxPathSegments (I)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun maxQueryParameters (I)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun maxQueryValueLength (I)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun maxSegmentLength (I)Lnet/plumt/deeplink/UriRules$Builder;
+	public final fun maxUriLength (I)Lnet/plumt/deeplink/UriRules$Builder;
+}
+
+public final class net/plumt/deeplink/UriRules$Companion {
+	public final fun builder ()Lnet/plumt/deeplink/UriRules$Builder;
 }
 

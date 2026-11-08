@@ -9,11 +9,13 @@ plugins {
 }
 
 android {
-    namespace = "net.plumt.deeplink.android"
+    namespace = "net.plumt.deeplink"
     compileSdk = 36
+    // 리소스를 더하면 이 접두어를 붙인다 — 앱 리소스와 이름이 겹치지 않게
+    resourcePrefix = "deeplink_"
 
     defaultConfig {
-        // ActivityOptions·Activity.referrer 는 22+, 서명 확인 API 는 28+ 를 런타임 분기한다
+        // 서명 확인은 28+, 발신자 OS 보증은 34+, App Links 검증 상태는 31+ 를 런타임 분기한다
         minSdk = 23
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -25,24 +27,30 @@ android {
 
     testOptions {
         unitTests.isIncludeAndroidResources = true
+        // Robolectric 은 API 레벨마다 android-all 을 올린다 — 여러 API 를 도는 테스트가 기본 힙(512m)을 넘는다
+        unitTests.all { it.maxHeapSize = "1536m" }
+    }
+
+    lint {
+        abortOnError = true
     }
 }
 
 kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+        // 공개 인터페이스의 기본 구현을 Java 기본 메서드로만 낸다(DefaultImpls 없음) — 인터페이스에 함수를 더해도 구현체가 깨지지 않는다
+        jvmDefault.set(org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY)
     }
     // 가시성을 적지 않은 선언은 컴파일 오류 — 공개 API 는 의도한 것만 연다
     explicitApi()
 }
 
 dependencies {
-    // 공개 API 가 코어 타입(DeepLinkRequest·CallerIdentity)을 드러내므로 api 로 노출한다
-    api(project(":deeplink-core"))
-    // DeepLinkQueue.consumeWhileResumed 가 LifecycleOwner 를 받는다. 내비게이션·Activity 라이브러리에는 의존하지 않는다
+    // consumeWhileResumed 가 LifecycleOwner 를 받는다. 내비게이션·Activity 라이브러리에는 의존하지 않는다
     api(libs.androidx.lifecycle.common)
-    // 소비 코루틴(공개 API 에 코루틴 타입은 나오지 않는다)
-    implementation(libs.kotlinx.coroutines.core)
+    // 소비 코루틴과 콜백 호출의 메인 디스패처(공개 API 에 코루틴 타입은 나오지 않는다)
+    implementation(libs.kotlinx.coroutines.android)
 
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
@@ -58,18 +66,26 @@ mavenPublishing {
     signAllPublications()
     pom {
         name.set("deeplink")
-        description.set("Android 딥링크 진입점의 인텐트 해석·발신자 서명 확인·extras 정제를 맡는 라이브러리")
+        description.set("딥링크를 허용 목록·경로 템플릿·타입 있는 파라미터·발신자 판정으로 검증하고 앞 화면에서 한 번만 처리하는 Android 라이브러리")
         inceptionYear.set("2026")
     }
 }
 
 kover {
     reports {
+        filters {
+            excludes {
+                // Kotlin 컴파일러 생성 클래스(when 매핑 등)는 테스트 대상이 아니다
+                classes("*\$WhenMappings")
+            }
+        }
         verify {
             rule {
-                // 무관용 요구 — 이 모듈 라인 커버리지가 90% 미만이면 check(=build) 가 실패한다
+                // 라인 커버리지 90퍼센트 미만이면 koverVerify(=check) 가 실패한다
                 minBound(90)
             }
         }
     }
 }
+
+tasks.named("check") { dependsOn("koverVerify") }
